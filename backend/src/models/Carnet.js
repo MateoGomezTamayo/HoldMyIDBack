@@ -39,15 +39,15 @@ const Carnet = sequelize.define('Carnet', {
     allowNull: true,
   },
   codigo_qr: {
-    type: DataTypes.LONGBLOB,
+    type: DataTypes.BLOB('long'),
     allowNull: true,
   },
   archivo_pdf: {
-    type: DataTypes.LONGBLOB,
+    type: DataTypes.BLOB('long'),
     allowNull: true,
   },
   foto_perfil: {
-    type: DataTypes.LONGBLOB,
+    type: DataTypes.BLOB('long'),
     allowNull: true,
   },
   activo: {

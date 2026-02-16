@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const sequelize = require('./config/database');
 const { Usuario, Carnet } = require('./models');
 const authRoutes = require('./routes/authRoutes');
+const crearBaseDatos = require('./utils/crearBaseDatos');
 
 const app = express();
 
@@ -13,14 +14,27 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Sincronizar modelos con la base de datos
-sequelize.sync({ alter: true })
-  .then(() => {
+// Inicializar servidor
+const inicializarServidor = async () => {
+  try {
+    // Crear base de datos si no existe
+    await crearBaseDatos();
+
+    // Sincronizar modelos con la base de datos
+    await sequelize.sync({ alter: true });
     console.log('✓ Base de datos sincronizada correctamente');
-  })
-  .catch((error) => {
-    console.error('✗ Error al sincronizar base de datos:', error.message);
-  });
+
+    // Iniciar servidor
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => {
+      console.log(`✓ Servidor corriendo en puerto ${PORT}`);
+      console.log(`✓ HoldMyIDBack API iniciado correctamente`);
+    });
+  } catch (error) {
+    console.error('✗ Error al inicializar servidor:', error.message);
+    process.exit(1);
+  }
+};
 
 // Rutas
 app.get('/', (req, res) => {
@@ -28,6 +42,9 @@ app.get('/', (req, res) => {
     message: 'Bienvenido a HoldMyIDBack API',
     version: '1.0.0',
     status: 'En desarrollo',
+    endpoints: {
+      auth: '/api/auth',
+    },
   });
 });
 
@@ -42,11 +59,7 @@ app.use((req, res) => {
   });
 });
 
-// Puerto
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en puerto ${PORT}`);
-});
+// Iniciar aplicación
+inicializarServidor();
 
 module.exports = app;
