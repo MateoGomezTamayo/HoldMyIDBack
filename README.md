@@ -380,9 +380,13 @@ npm install
 
 ## 👨‍💻 Autores
 
-- 👤 Mateo Gómez Tamayo
-- 👤 Lorenzo Vargas Sala
-- 👤 [Agregar otros miembros del equipo]
+| Nombre | GitHub |
+|--------|--------|
+| Mateo Gómez Tamayo | [@MateoGomezTamayo](https://github.com/MateoGomezTamayo) |
+| Lorenzo Vargas Sala | [@Lorox10](https://github.com/Lorox10) |
+| Sofia Alzate | [@sofiaalzate11](https://github.com/sofiaalzate11) |
+| [Integrante 4] | [GitHub](https://github.com/) |
+| [Integrante 5] | [GitHub](https://github.com/) |
 
 ---
 
