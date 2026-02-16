@@ -4,11 +4,11 @@ Una cartera digital segura e interoperable diseñada para centralizar y gestiona
 
 ## Características
 
--  Autenticación segura con JWT
--  Interfaz responsiva (web y móvil)
--  Digitalización de carnets y credenciales
--  Gestión centralizada de identidad
--  Protección de datos con encriptación
+- Autenticación segura con JWT
+- Interfaz responsiva (web y móvil)
+- Digitalización de carnets y credenciales
+- Gestión centralizada de identidad
+- Protección de datos con encriptación
 
 ## Estructura del proyecto
 
