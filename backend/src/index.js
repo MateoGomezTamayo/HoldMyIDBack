@@ -3,7 +3,6 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const sequelize = require('./config/database');
-const { Usuario, Carnet } = require('./models');
 const authRoutes = require('./routes/authRoutes');
 const carnetRoutes = require('./routes/carnetRoutes');
 const usuarioRoutes = require('./routes/usuarioRoutes');
@@ -23,7 +22,7 @@ const inicializarServidor = async () => {
     await crearBaseDatos();
 
     // Sincronizar modelos con la base de datos
-    await sequelize.sync({ alter: true });
+    await sequelize.sync();
     console.log('✓ Base de datos sincronizada correctamente');
 
     // Iniciar servidor

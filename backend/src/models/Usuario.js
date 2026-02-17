@@ -17,8 +17,7 @@ const Usuario = sequelize.define('Usuario', {
   },
   codigo_estudiante: {
     type: DataTypes.STRING(50),
-    allowNull: false,
-    unique: true,
+    allowNull: true,
   },
   email: {
     type: DataTypes.STRING(100),
@@ -32,6 +31,15 @@ const Usuario = sequelize.define('Usuario', {
   universidad: {
     type: DataTypes.STRING(100),
     allowNull: true,
+  },
+  cedula: {
+    type: DataTypes.STRING(20),
+    allowNull: true,
+  },
+  rol: {
+    type: DataTypes.ENUM('ADMIN', 'ESTUDIANTE', 'EMPLEADO'),
+    allowNull: false,
+    defaultValue: 'ESTUDIANTE',
   },
   activo: {
     type: DataTypes.BOOLEAN,

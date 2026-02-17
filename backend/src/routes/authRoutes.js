@@ -15,6 +15,7 @@ router.get('/verify', authMiddleware, (req, res) => {
     data: {
       id: req.usuario.id,
       email: req.usuario.email,
+      rol: req.usuario.rol,
     },
   });
 });

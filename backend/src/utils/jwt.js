@@ -7,6 +7,7 @@ const generateToken = (usuario) => {
       id: usuario.id,
       email: usuario.email,
       codigo_estudiante: usuario.codigo_estudiante,
+      rol: usuario.rol,
     },
     process.env.JWT_SECRET,
     { expiresIn: '24h' }

@@ -8,10 +8,13 @@
 
 HoldMyIDBack es una aplicación web responsiva que permite a los usuarios:
 
-✅ Registrarse con seguridad utilizando autenticación JWT
-✅ Subir y almacenar digitalmente sus credenciales (carnets universitarios, etc.)
+✅ Registrarse con seguridad utilizando autenticación JWT (roles: ESTUDIANTE/EMPLEADO)
+✅ Generar y almacenar carnets digitales con QR único
+✅ Subir fotos de perfil para sus carnets
+✅ Gestionar múltiples carnets (hasta 2: uno ESTUDIANTE y uno EMPLEADO)
 ✅ Acceder a sus credenciales desde cualquier dispositivo
-✅ Ver sus credenciales en un formato de cartera digital
+✅ Sistema de prevención de fraude con verificación de propietario
+✅ Ver sus credenciales en un formato de cartera digital con efecto flip
 
 ---
 
@@ -36,6 +39,8 @@ HoldMyIDBack es una aplicación web responsiva que permite a los usuarios:
 - **bcryptjs 2.4** - Hash de contraseñas
 - **CORS 2.8** - Permitir peticiones desde el frontend
 - **dotenv 16.0** - Gestión de variables de entorno
+- **qrcode 1.5** - Generación de códigos QR en formato PNG
+- **multer 1.4** - Middleware para carga de archivos (fotos)
 
 ### 🗄️ Base de Datos
 
@@ -125,7 +130,23 @@ cd frontend
 npm install
 ```
 
-### 5️⃣ Ejecutar la Aplicación
+### 5️⃣ Instalar Dependencias
+
+#### Backend
+
+```bash
+cd backend
+npm install
+```
+
+#### Frontend
+
+```bash
+cd frontend
+npm install
+```
+
+### 7️⃣ Ejecutar la Aplicación
 
 #### 🔲 Terminal 1 - Backend
 
@@ -150,49 +171,249 @@ npm start
 
 Se abrirá automáticamente en `http://localhost:3000`
 
----
-
 ## 🔗 Endpoints API
 
-La API seguirá la estructura RESTful:
+### Autenticación
 
-| Método | Endpoint             | Descripción                 |
-| ------ | -------------------- | --------------------------- |
-| POST   | `/api/auth/register` | Registro de usuario         |
-| POST   | `/api/auth/login`    | Login de usuario            |
-| GET    | `/api/auth/verify`   | Verificar token JWT         |
-| GET    | `/api/usuarios/:id`  | Obtener datos del usuario   |
-| GET    | `/api/carnets`       | Obtener carnets del usuario |
-| POST   | `/api/carnets`       | Subir nuevo carnet          |
-| DELETE | `/api/carnets/:id`   | Eliminar carnet             |
+| Método | Endpoint                      | Descripción                             |
+| ------ | ----------------------------- | --------------------------------------- |
+| POST   | `/api/autenticacion/registro` | Registrar usuario (ESTUDIANTE/EMPLEADO) |
+| POST   | `/api/autenticacion/login`    | Iniciar sesión                          |
 
----
+### Carnets
 
-## 🔐 Flujo de Autenticación
-
-```
-1. Usuario se registra con email y contraseña
-   ↓
-2. Backend hashea la contraseña con bcryptjs
-   ↓
-3. Se guarda en la base de datos
-   ↓
-4. Usuario hace login
-   ↓
-5. Backend verifica contraseña
-   ↓
-6. Backend genera JWT token
-   ↓
-7. Frontend guarda token en localStorage
-   ↓
-8. Token se envía en headers de peticiones autenticadas
-   ↓
-9. Middleware en backend valida token en cada petición
-```
+| Método | Endpoint                          | Descripción                                      |
+| ------ | --------------------------------- | ------------------------------------------------ |
+| GET    | `/api/carnets`                    | Obtener todos los carnets del usuario            |
+| POST   | `/api/carnets/agregar-estudiante` | Agregar carnet ESTUDIANTE (verifica propietario) |
+| POST   | `/api/carnets/agregar-empleado`   | Agregar carnet EMPLEADO (verifica propietario)   |
+| PUT    | `/api/carnets/:carnetId/foto`     | Subir foto de perfil (multer)                    |
 
 ---
 
-## 👥 Guía de Contribución
+## 🔐 Flujo de Autenticación y Seguridad
+
+### Registro e Identificación
+
+```
+1. Usuario selecciona rol: ESTUDIANTE o EMPLEADO
+   ↓
+2. Sistema valida credenciales en tablas maestras:
+   - ESTUDIANTE: código_estudiante en tabla Estudiante
+   - EMPLEADO: cédula en tabla Empleado
+   ↓
+3. Backend hashea la contraseña con bcryptjs
+   ↓
+4. Se crea Usuario + Carnet + QR único
+   ↓
+5. Se retorna JWT token (exp: 24h)
+```
+
+### Prevención de Fraude
+
+```
+6. Usuario intenta agregar carnet secundario
+   ↓
+7. Sistema verifica propietario:
+   - Consulta tabla Usuario con Op.ne:
+     ¿existe código/cedula bajo OTRO usuario_id?
+   ↓
+8. Si existe: Rechaza con error 403
+   "Este código ya está registrado bajo otro usuario"
+   ↓
+9. Si no existe: Crea carnet y guarda credencial en Usuario
+```
+
+### Gestión de Carnets
+
+```
+10. Usuario puede tener máximo 2 carnets:
+    - 1 ESTUDIANTE (con carrera)
+    - 1 EMPLEADO (con cargo)
+    ↓
+11. Para cada carnet:
+    - Se genera código QR único (PNG BLOB)
+    - Se puede subir foto de perfil (BLOB)
+    - Se almacenan en tabla Carnet
+    ↓
+12. Frontend detecta carnets sin foto:
+    → Abre modal automático para subir
+    ↓
+14. Fotos se retornan como base64 para previsualizacion
+```
+
+---
+
+## 📊 Esquema de Base de Datos
+
+### Tabla: Usuario
+
+```sql
+CREATE TABLE Usuario (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  nombre VARCHAR(100) NOT NULL,
+  apellidos VARCHAR(100) NOT NULL,
+  codigo_estudiante VARCHAR(50) UNIQUE NULL,  -- Guardado cuando agrega carnet ESTUDIANTE
+  cedula VARCHAR(20) UNIQUE NULL,              -- Guardado cuando agrega carnet EMPLEADO
+  email VARCHAR(100) UNIQUE NOT NULL,
+  contrasena VARCHAR(255) NOT NULL,            -- Hasheada con bcryptjs
+  rol ENUM('ESTUDIANTE', 'EMPLEADO') NOT NULL,
+  activo BOOLEAN DEFAULT true,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+```
+
+### Tabla: Carnet
+
+```sql
+CREATE TABLE Carnet (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  usuario_id INT NOT NULL REFERENCES Usuario(id),
+  codigo_estudiante VARCHAR(50) NULL,
+  rol ENUM('ESTUDIANTE', 'EMPLEADO') NOT NULL,
+  numero VARCHAR(50) UNIQUE NOT NULL,
+  codigo_qr LONGBLOB NOT NULL,                 -- PNG binario
+  foto_perfil LONGBLOB NULL,                   -- JPEG/PNG binario (se retorna como base64)
+  fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  ultima_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+```
+
+### Tabla: Estudiante (Tabla Maestra)
+
+```sql
+CREATE TABLE Estudiante (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  codigo_estudiante VARCHAR(50) UNIQUE NOT NULL,
+  carrera VARCHAR(100) NOT NULL,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### Tabla: Empleado (Tabla Maestra)
+
+```sql
+CREATE TABLE Empleado (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  cedula VARCHAR(20) UNIQUE NOT NULL,
+  cargo VARCHAR(100) NULL,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+---
+
+## � Estructura del Proyecto
+
+```
+HoldMyIDBack/
+├── backend/
+│   ├── src/
+│   │   ├── config/
+│   │   │   └── database.js          # Configuración Sequelize
+│   │   ├── controllers/
+│   │   │   ├── authController.js    # Registro/Login, genera QR
+│   │   │   └── carnetController.js  # CRUD carnets, prevención fraude
+│   │   ├── middleware/
+│   │   │   └── auth.js              # Verificación JWT
+│   │   ├── models/
+│   │   │   ├── Usuario.js           # Modelo Usuario
+│   │   │   ├── Carnet.js            # Modelo Carnet (con código_qr, foto)
+│   │   │   ├── Estudiante.js        # Tabla maestra
+│   │   │   ├── Empleado.js          # Tabla maestra
+│   │   │   └── index.js             # Asociaciones
+│   │   ├── routes/
+│   │   │   ├── authRoutes.js        # POST /registro, /login
+│   │   │   └── carnetRoutes.js      # GET carnets, POST agregar, PUT foto (multer)
+│   │   ├── utils/
+│   │   │   ├── crearBaseDatos.js    # Inicializador BD
+│   │   │   ├── jwt.js               # Generación JWT
+│   │   │   ├── password.js          # Hash bcryptjs
+│   │   │   └── ...
+│   │   └── index.js                 # Entry point, Express setup
+│   ├── .env                         # Variables de entorno
+│   └── package.json
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── CarnetCard.jsx       # Efecto flip, muestra anverso/reverso
+│   │   │   ├── AddCarnetModal.jsx   # Selector rol (ESTUDIANTE/EMPLEADO)
+│   │   │   ├── UploadPhotoModal.jsx # Carga foto con preview
+│   │   │   └── ...
+│   │   ├── pages/
+│   │   │   ├── Home.jsx             # Landing page
+│   │   │   ├── Login.jsx            # Formulario login
+│   │   │   ├── Register.jsx         # Formulario registro (rol selector)
+│   │   │   ├── Dashboard.jsx        # Cartera digital (centr. Flexbox)
+│   │   │   └── ...
+│   │   ├── styles/
+│   │   │   ├── CarnetCard.css       # Animación flip, placeholder foto
+│   │   │   ├── Dashboard.css        # Flexbox centering
+│   │   │   ├── AddCarnetModal.css   # Botones rol, badges
+│   │   │   └── UploadPhotoModal.css # Preview, validación archivo
+│   │   ├── App.jsx                  # Router principal
+│   │   └── index.jsx
+│   └── package.json
+│
+├── README.md                        # Este archivo
+└── .gitignore
+```
+
+---
+
+## 🧪 Escenarios de Prueba
+
+### Test 1: Registro y Validación de Propietario
+
+```
+1. Usuario A se registra:
+   - Email: usuarioA@test.com
+   - Rol: ESTUDIANTE
+   - Código: 202310014
+   - Contraseña: test123
+
+2. Usuario B intenta registrarse con MISMO código:
+   - ❌ Rechazo: "código_estudiante ya registrado en tabla Estudiante"
+
+3. Usuario B se registra con código diferente:
+   - Código: 202310015
+   - Contraseña: test456
+   - ✅ Éxito: Crea Usuario + Carnet + QR
+
+4. Usuario A agrega carnet EMPLEADO (segundo carnet):
+   - Cédula: 1131110580
+   - ✅ Éxito: Verifica cédula en tabla Empleado y Op.ne check
+
+5. Usuario B intenta agregar mismo EMPLEADO carnet:
+   - ❌ Rechazo 403: "Esta cédula ya está registrada bajo otro usuario"
+```
+
+### Test 2: Gestión de Fotos
+
+```
+1. Usuario crea carnet nuevo
+   → Dashboard detecta foto_perfil NULL
+   → Abre UploadPhotoModal automáticamente
+
+2. Usuario selecciona archivo JPEG (< 5MB)
+   → Preview muestra imagen
+   → PUT /api/carnets/:id/foto con multipart/form-data
+   → Backend guarda BLOB en foto_perfil
+
+3. Frontend mapea foto_perfil → base64
+   → CarnetCard muestra foto en anverso
+   → Si NULL muestra placeholder (👤)
+```
+
+### Test 3: Layout Carnets
+
+```
+- 1 carnet: Centrado en pantalla
+- 2 carnets: Distribuidos uniformemente con gap: 40px
+- Responsive: En móvil, flex-direction: column; align-items: center
+```
 
 Este proyecto es desarrollado por 5 miembros del equipo. Para mantener orden:
 

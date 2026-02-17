@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap');
+
+:root {
+  --home-bg: #0b1226;
+  --home-accent: #2563eb;
+  --home-accent-2: #14b8a6;
+  --home-card: #0f1b3d;
+  --home-text: #e2e8f0;
+}
+
+.home {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at top, #1e293b 0%, #0b1226 55%, #070b19 100%);
+  font-family: 'Space Grotesk', sans-serif;
+  padding: 24px;
+}
+
+.home-card {
+  width: min(560px, 92vw);
+  background: linear-gradient(145deg, rgba(15, 27, 61, 0.95), rgba(7, 11, 25, 0.95));
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 20px;
+  padding: 32px;
+  color: var(--home-text);
+  box-shadow: 0 20px 60px rgba(2, 6, 23, 0.55);
+}
+
+.home-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--home-accent-2);
+  margin-bottom: 12px;
+}
+
+.home-card h1 {
+  font-size: 2.4rem;
+  margin: 0 0 10px 0;
+}
+
+.home-card p {
+  margin: 0 0 28px 0;
+  color: rgba(226, 232, 240, 0.8);
+  line-height: 1.5;
+}
+
+.home-actions {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--home-accent), #3b82f6);
+  color: white;
+  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.35);
+}
+
+.btn-outline {
+  border: 1px solid rgba(148, 163, 184, 0.5);
+  color: var(--home-text);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+@media (max-width: 480px) {
+  .home-card h1 {
+    font-size: 2rem;
+  }
+}

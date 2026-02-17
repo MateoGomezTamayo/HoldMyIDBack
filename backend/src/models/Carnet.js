@@ -20,6 +20,10 @@ const Carnet = sequelize.define('Carnet', {
     type: DataTypes.STRING(50),
     allowNull: false,
   },
+  rol: {
+    type: DataTypes.ENUM('ESTUDIANTE', 'EMPLEADO'),
+    allowNull: false,
+  },
   tipo_credencial: {
     type: DataTypes.STRING(50),
     allowNull: false,
