@@ -2,15 +2,15 @@
 
 es una cartera digital que permite a los usuarios guardar, ver y gestionar credenciales verificables (carnets de estudiante o empleado) desde cualquier dispositivo. Funciona como una billetera digital donde cada usuario puede tener hasta dos carnets:
 
-Uno de ESTUDIANTE
-,Uno de EMPLEADO
+- **Uno de ESTUDIANTE**
+- **Uno de EMPLEADO**
 
 Además, cada carnet tiene:
 
-Un QR único
-Una foto de perfil
-Información verificada desde tablas maestras
-Prevención antifraude para evitar duplicación de códigos o cédulas
+- **Un QR único**
+- **Una foto de perfil**
+- **Información verificada desde tablas maestras**
+- **Prevención antifraude para evitar duplicación de códigos o cédulas**
 
 
 
@@ -18,13 +18,13 @@ Prevención antifraude para evitar duplicación de códigos o cédulas
 
 HoldMyIDBack es una aplicación web responsiva que permite a los usuarios:
 
-✅ Registrarse con seguridad utilizando autenticación JWT (roles: ESTUDIANTE/EMPLEADO)
-✅ Generar y almacenar carnets digitales con QR único
-✅ Subir fotos de perfil para sus carnets
-✅ Gestionar múltiples carnets (hasta 2: uno ESTUDIANTE y uno EMPLEADO)
-✅ Acceder a sus credenciales desde cualquier dispositivo
-✅ Sistema de prevención de fraude con verificación de propietario
-✅ Ver sus credenciales en un formato de cartera digital con efecto flip
+- ✅ Registrarse con seguridad utilizando autenticación JWT (roles: ESTUDIANTE/EMPLEADO)
+- ✅ Generar y almacenar carnets digitales con QR único
+- ✅ Subir fotos de perfil para sus carnets
+- ✅ Gestionar múltiples carnets (hasta 2: uno ESTUDIANTE y uno EMPLEADO)
+- ✅ Acceder a sus credenciales desde cualquier dispositivo
+- ✅ Sistema de prevención de fraude con verificación de propietario
+- ✅ Ver sus credenciales en un formato de cartera digital con efecto flip
 
 ---
 
