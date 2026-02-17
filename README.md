@@ -1,6 +1,16 @@
 ﻿# 🎫 HoldMyID
 
-> Una cartera digital segura e interoperable diseñada para centralizar y gestionar credenciales verificables en un único ecosistema accesible.
+>  es una cartera digital que permite a los usuarios guardar, ver y gestionar credenciales verificables (carnets de estudiante o empleado) desde cualquier dispositivo. Funciona como una billetera digital donde cada usuario puede tener hasta dos carnets:
+
+Uno de ESTUDIANTE
+Uno de EMPLEADO
+
+Además, cada carnet tiene:
+
+Un QR único
+Una foto de perfil
+Información verificada desde tablas maestras
+Prevención antifraude para evitar duplicación de códigos o cédulas
 
 ---
 
