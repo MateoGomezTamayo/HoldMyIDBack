@@ -1,9 +1,11 @@
-const { Usuario, Carnet, Estudiante, Empleado } = require('../models');
+const { Usuario, Carnet, Estudiante, Empleado, VerificacionCodigo } = require('../models');
 const QRCode = require('qrcode');
 const { hashPassword, verifyPassword } = require('../utils/password');
 const { generateToken } = require('../utils/jwt');
+const { generarCodigo, enviarCodigoVerificacion } = require('../utils/emailService');
+const { Op } = require('sequelize');
 
-// Registro de usuario
+// Registro de usuario (Paso 1: Enviar código de verificación)
 const registro = async (req, res) => {
   try {
     const { nombre, apellidos, codigo_estudiante, email, contraseña, contrasena, universidad, rol, cedula, cargo } = req.body;
@@ -17,7 +19,7 @@ const registro = async (req, res) => {
       });
     }
 
-    // Validar rol si se envia
+    // Validar rol si se envía
     if (rol && !['ESTUDIANTE', 'EMPLEADO'].includes(rol)) {
       return res.status(400).json({
         success: false,
@@ -42,35 +44,68 @@ const registro = async (req, res) => {
       });
     }
 
-    // Validar existencia en tablas base
+    // Validar que exista en la tabla base (estudiantes/empleados)
+    let registroBase;
+    let identificador;
+    let correoRegistro;
+
     if (rolFinal === 'ESTUDIANTE') {
-      const estudianteValido = await Estudiante.findOne({
+      registroBase = await Estudiante.findOne({
         where: { codigo_estudiante },
       });
 
-      if (!estudianteValido) {
+      if (!registroBase) {
         return res.status(400).json({
           success: false,
-          message: 'El código de estudiante no está autorizado',
+          message: 'El código de estudiante no existe en la base de datos',
         });
       }
-    }
 
-    if (rolFinal === 'EMPLEADO') {
-      const empleadoValido = await Empleado.findOne({
+      identificador = codigo_estudiante;
+      correoRegistro = registroBase.correo;
+
+      if (!correoRegistro) {
+        return res.status(400).json({
+          success: false,
+          message: 'El código de estudiante no tiene correo registrado. Contacta admisión.',
+        });
+      }
+
+      // Verificar que el correo proporcionado coincida con el de la BD
+      if (email.toLowerCase() !== correoRegistro.toLowerCase()) {
+        return res.status(400).json({
+          success: false,
+          message: 'El correo proporcionado no coincide con el registrado para este código de estudiante',
+        });
+      }
+    } else {
+      registroBase = await Empleado.findOne({
         where: { cedula },
       });
 
-      if (!empleadoValido) {
+      if (!registroBase) {
         return res.status(400).json({
           success: false,
-          message: 'La cédula no está autorizada',
+          message: 'La cédula no existe en la base de datos',
         });
       }
 
-      // Actualizar cargo si se proporciona
-      if (cargo) {
-        await empleadoValido.update({ cargo });
+      identificador = cedula;
+      correoRegistro = registroBase.correo;
+
+      if (!correoRegistro) {
+        return res.status(400).json({
+          success: false,
+          message: 'La cédula no tiene correo registrado. Contacta recursos humanos.',
+        });
+      }
+
+      // Verificar que el correo proporcionado coincida con el de la BD
+      if (email.toLowerCase() !== correoRegistro.toLowerCase()) {
+        return res.status(400).json({
+          success: false,
+          message: 'El correo proporcionado no coincide con el registrado para esta cédula',
+        });
       }
     }
 
@@ -79,55 +114,158 @@ const registro = async (req, res) => {
       where: { email },
     });
 
-    let usuarioFinal = usuarioExistente;
-
-    if (usuarioExistente) {
-      const contraseñaValida = await verifyPassword(password, usuarioExistente.contrasena);
-      if (!contraseñaValida) {
-        return res.status(401).json({
-          success: false,
-          message: 'Credenciales inválidas',
-        });
-      }
-    } else {
-      // Hashear contraseña
-      const contraseñaHasheada = await hashPassword(password);
-
-      // Crear usuario
-      usuarioFinal = await Usuario.create({
-        nombre,
-        apellidos,
-        codigo_estudiante: rolFinal === 'ESTUDIANTE' ? codigo_estudiante : null,
-        email,
-        contrasena: contraseñaHasheada,
-        universidad: universidad || null,
-        cedula: rolFinal === 'EMPLEADO' ? cedula : null,
-        rol: rolFinal,
+    if (usuarioExistente && usuarioExistente.email_verificado) {
+      return res.status(400).json({
+        success: false,
+        message: 'Este correo ya está registrado y verificado',
       });
     }
 
-    const identificador = rolFinal === 'EMPLEADO' ? cedula : codigo_estudiante;
+    // Generar código de verificación
+    const codigo = generarCodigo();
+    const fechaExpiracion = new Date();
+    fechaExpiracion.setMinutes(fechaExpiracion.getMinutes() + 10);
 
-    const carnetExistente = await Carnet.findOne({
+    // Guardar el código temporalmente (después procesar en verificarRegistro)
+    // Se almacena la información del registro para luego verificar
+    const datosRegistro = {
+      nombre,
+      apellidos,
+      email,
+      password,
+      codigo_estudiante: rolFinal === 'ESTUDIANTE' ? codigo_estudiante : null,
+      cedula: rolFinal === 'EMPLEADO' ? cedula : null,
+      universidad: universidad || null,
+      rol: rolFinal,
+      cargo: cargo || null,
+    };
+
+    // Crear código de verificación de registro
+    await VerificacionCodigo.create({
+      usuario_id: 0, // Temporal, sin usuario aún
+      codigo,
+      correo: correoRegistro,
+      cedula: identificador,
+      tipo: rolFinal,
+      fecha_expiracion: fechaExpiracion,
+      usado: false,
+    });
+
+    // Guardar datos en sesión o caché (o enviar al frontend para que reenviélos)
+    // Por ahora usaremos VerificacionCodigo como almacenamiento temporal
+    
+    // Enviar código por correo
+    const resultadoEmail = await enviarCodigoVerificacion(correoRegistro, codigo, `Registro - ${rolFinal}`);
+
+    if (!resultadoEmail.success) {
+      return res.status(500).json({
+        success: false,
+        message: 'Error al enviar el código al correo',
+      });
+    }
+
+    // Encriptar datos para enviar al frontend
+    const datosEncriptados = Buffer.from(JSON.stringify(datosRegistro)).toString('base64');
+
+    const responseData = {
+      correo: correoRegistro.replace(/(.{2})(.*)(@.*)/, '$1****$3'),
+      tiempoExpiracion: 10,
+      datosTemp: datosEncriptados, // Enviar al frontend para después
+    };
+
+    // En desarrollo, mostrar el código en consola
+    if (process.env.NODE_ENV === 'development') {
+      responseData.codigo = codigo; // Agregar código solo en desarrollo
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Código de verificación enviado al correo',
+      data: responseData,
+    });
+  } catch (error) {
+    console.error('Error en registro:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error en el registro',
+      error: error.message,
+    });
+  }
+};
+
+// Verificar código de registro (Paso 2: Confirmar correo y crear cuenta)
+const verificarRegistro = async (req, res) => {
+  try {
+    const { codigo, nombre, apellidos, email, password, codigo_estudiante, cedula, universidad, rol, cargo, datosTemp } = req.body;
+
+    // Validar campos
+    if (!codigo || !nombre || !apellidos || !email || !password || !rol) {
+      return res.status(400).json({
+        success: false,
+        message: 'Faltan campos requeridos',
+      });
+    }
+
+    const identificador = rol === 'ESTUDIANTE' ? codigo_estudiante : cedula;
+
+    // Buscar el código de verificación no usado y no expirado
+    const verificacion = await VerificacionCodigo.findOne({
       where: {
-        usuario_id: usuarioFinal.id,
-        rol: rolFinal,
-        codigo_estudiante: identificador,
+        codigo,
+        cedula: identificador,
+        tipo: rol,
+        usado: false,
+        fecha_expiracion: {
+          [Op.gt]: new Date(),
+        },
       },
     });
 
-    if (carnetExistente) {
+    if (!verificacion) {
       return res.status(400).json({
         success: false,
-        message: 'Ya existe un carnet para este rol',
+        message: 'Código inválido, expirado o ya utilizado',
       });
     }
 
+    // Marcar código como usado
+    await verificacion.update({ usado: true });
+
+    // Verificar si el usuario ya existe
+    let usuarioFinal = await Usuario.findOne({
+      where: { email },
+    });
+
+    if (!usuarioFinal) {
+      // Hashear contraseña
+      const passwordHasheada = await hashPassword(password);
+
+      // Crear usuario verificado
+      usuarioFinal = await Usuario.create({
+        nombre,
+        apellidos,
+        codigo_estudiante: rol === 'ESTUDIANTE' ? codigo_estudiante : null,
+        email,
+        contrasena: passwordHasheada,
+        universidad: universidad || null,
+        cedula: rol === 'EMPLEADO' ? cedula : null,
+        rol,
+        email_verificado: true, // Marcado como verificado
+      });
+    } else {
+      // Si el usuario existe pero no está verificado, actualizar
+      if (!usuarioFinal.email_verificado) {
+        await usuarioFinal.update({ email_verificado: true });
+      }
+    }
+
+    // Crear carnet inicial
     const qrPayload = JSON.stringify({
       id: usuarioFinal.id,
       identificador,
-      rol: rolFinal,
+      rol,
     });
+
     const qrBuffer = await QRCode.toBuffer(qrPayload, {
       type: 'png',
       width: 300,
@@ -137,29 +275,25 @@ const registro = async (req, res) => {
     const carnetCreado = await Carnet.create({
       usuario_id: usuarioFinal.id,
       codigo_estudiante: identificador,
-      rol: rolFinal,
-      numero: `${rolFinal}-${identificador}`,
+      rol,
+      numero: `${rol}-${identificador}`,
       codigo_qr: qrBuffer,
     });
 
     // Generar token
     const token = generateToken(usuarioFinal);
-    
-    // Convertir QR a base64
     const qrBase64 = qrBuffer.toString('base64');
 
     res.status(201).json({
       success: true,
-      message: 'Usuario registrado exitosamente',
+      message: '¡Registro completado exitosamente! Tu correo ha sido verificado.',
       data: {
         id: usuarioFinal.id,
         nombre: usuarioFinal.nombre,
         apellidos: usuarioFinal.apellidos,
-        codigo_estudiante: usuarioFinal.codigo_estudiante,
         email: usuarioFinal.email,
-        universidad: usuarioFinal.universidad,
-        cedula: usuarioFinal.cedula,
         rol: usuarioFinal.rol,
+        email_verificado: usuarioFinal.email_verificado,
         carnet: {
           id: carnetCreado.id,
           numero: carnetCreado.numero,
@@ -170,9 +304,10 @@ const registro = async (req, res) => {
       token,
     });
   } catch (error) {
+    console.error('Error al verificar registro:', error);
     res.status(500).json({
       success: false,
-      message: 'Error en el registro',
+      message: 'Error al verificar el registro',
       error: error.message,
     });
   }
@@ -221,6 +356,14 @@ const login = async (req, res) => {
       return res.status(401).json({
         success: false,
         message: 'Usuario desactivado',
+      });
+    }
+
+    // Verificar si el email está verificado
+    if (!usuario.email_verificado) {
+      return res.status(401).json({
+        success: false,
+        message: 'Tu correo no ha sido verificado. Por favor verifica tu correo antes de continuar.',
       });
     }
 
@@ -282,6 +425,7 @@ const obtenerPerfil = async (req, res) => {
 
 module.exports = {
   registro,
+  verificarRegistro,
   login,
   obtenerPerfil,
 };

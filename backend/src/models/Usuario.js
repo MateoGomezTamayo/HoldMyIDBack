@@ -45,6 +45,10 @@ const Usuario = sequelize.define('Usuario', {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
   },
+  email_verificado: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
   fecha_creacion: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,

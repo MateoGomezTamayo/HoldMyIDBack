@@ -83,6 +83,15 @@ function Dashboard() {
     cargarCarnets(token);
   };
 
+  const handleLogout = () => {
+    // Limpiar el almacenamiento local
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    
+    // Redirigir a la página de login
+    navigate('/login');
+  };
+
   return (
     <div className="dashboard">
       <div className="dashboard-header">
@@ -95,6 +104,9 @@ function Dashboard() {
           <h2>Hola, {user.nombre}</h2>
           <p>Email: {user.email}</p>
         </div>
+        <button className="btn-logout" onClick={handleLogout}>
+          Cerrar Sesión
+        </button>
       </section>
 
       {error && <div style={{ color: 'red', marginLeft: '20px' }}>{error}</div>}
