@@ -5,6 +5,8 @@ const bodyParser = require('body-parser');
 const sequelize = require('./config/database');
 const { Usuario, Carnet } = require('./models');
 const authRoutes = require('./routes/authRoutes');
+const carnetRoutes = require('./routes/carnetRoutes');
+const usuarioRoutes = require('./routes/usuarioRoutes');
 const crearBaseDatos = require('./utils/crearBaseDatos');
 
 const app = express();
@@ -44,12 +46,20 @@ app.get('/', (req, res) => {
     status: 'En desarrollo',
     endpoints: {
       auth: '/api/auth',
+      usuarios: '/api/usuarios',
+      carnets: '/api/carnets',
     },
   });
 });
 
 // Rutas de autenticación
 app.use('/api/auth', authRoutes);
+
+// Rutas de usuarios
+app.use('/api/usuarios', usuarioRoutes);
+
+// Rutas de carnets
+app.use('/api/carnets', carnetRoutes);
 
 // Manejo de errores para rutas no encontradas
 app.use((req, res) => {

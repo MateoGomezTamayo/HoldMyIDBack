@@ -7,6 +7,18 @@ const authMiddleware = require('../middleware/auth');
 router.post('/registro', registro);
 router.post('/login', login);
 
+// Ruta de verificación de token
+router.get('/verify', authMiddleware, (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'Token válido',
+    data: {
+      id: req.usuario.id,
+      email: req.usuario.email,
+    },
+  });
+});
+
 // Rutas protegidas
 router.get('/perfil', authMiddleware, obtenerPerfil);
 
