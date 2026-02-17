@@ -3,7 +3,7 @@
 es una cartera digital que permite a los usuarios guardar, ver y gestionar credenciales verificables (carnets de estudiante o empleado) desde cualquier dispositivo. Funciona como una billetera digital donde cada usuario puede tener hasta dos carnets:
 
 Uno de ESTUDIANTE
-Uno de EMPLEADO
+,Uno de EMPLEADO
 
 Además, cada carnet tiene:
 
