@@ -76,60 +76,7 @@ cd HoldMyIDBack
 
 ### 2️⃣ Configurar Base de Datos MySQL
 
-#### Opción A: Línea de comandos MySQL
-
-```bash
-mysql -u root -p
-```
-
-Luego ejecuta este script SQL:
-
-```sql
-CREATE DATABASE holdmyidback CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE holdmyidback;
-
--- Tabla de usuarios
-CREATE TABLE usuarios (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  nombre VARCHAR(100) NOT NULL,
-  email VARCHAR(100) UNIQUE NOT NULL,
-  contrasena VARCHAR(255) NOT NULL,
-  universidad VARCHAR(100),
-  fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  activo BOOLEAN DEFAULT TRUE
-);
-
--- Tabla de carnets
-CREATE TABLE carnets (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  usuario_id INT NOT NULL,
-  tipo VARCHAR(50) NOT NULL,
-  numero VARCHAR(50) UNIQUE NOT NULL,
-  expedicion DATE,
-  vencimiento DATE,
-  imagen_qr LONGBLOB,
-  archivo_pdf LONGBLOB,
-  fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
-);
-
--- Tabla de sesiones
-CREATE TABLE sesiones (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  usuario_id INT NOT NULL,
-  token VARCHAR(500) NOT NULL,
-  fecha_expiracion DATETIME,
-  fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
-);
-```
-
-#### Opción B: Cliente MySQL (MySQL Workbench)
-
-1. Abre MySQL Workbench
-2. Conecta con tus credenciales
-3. Copia el SQL anterior en una nueva pestaña de Query
-4. Ejecuta (Ctrl+Shift+Enter)
+Configura tu base de datos MySQL según las credenciales que uses.
 
 ### 3️⃣ Configurar Variables de Entorno
 
@@ -202,46 +149,6 @@ npm start
 ```
 
 Se abrirá automáticamente en `http://localhost:3000`
-
----
-
-## 📁 Estructura del Proyecto
-
-```
-HoldMyIDBack/
-├── backend/
-│   ├── src/
-│   │   ├── index.js              # Punto de entrada del servidor
-│   │   ├── config/
-│   │   │   └── database.js       # Configuración de MySQL con Sequelize
-│   │   ├── routes/               # Rutas de la API
-│   │   ├── controllers/          # Lógica de negocio
-│   │   ├── models/               # Modelos de Sequelize
-│   │   ├── middleware/           # Middlewares (autenticación, etc)
-│   │   └── utils/                # Funciones auxiliares
-│   ├── package.json
-│   ├── .env.example
-│   └── .gitignore
-│
-├── frontend/
-│   ├── src/
-│   │   ├── index.jsx             # Punto de entrada de React
-│   │   ├── App.jsx               # Componente principal
-│   │   ├── App.css               # Estilos principales
-│   │   ├── index.css             # Estilos globales
-│   │   ├── components/           # Componentes reutilizables
-│   │   ├── pages/                # Páginas principales
-│   │   ├── services/             # Servicios (llamadas a API)
-│   │   ├── hooks/                # Hooks personalizados
-│   │   └── context/              # Contexto de estado global
-│   ├── public/
-│   │   └── index.html            # HTML principal
-│   ├── package.json
-│   └── .gitignore
-│
-├── README.md
-└── .gitignore
-```
 
 ---
 
@@ -387,12 +294,6 @@ npm install
 | Sofia Alzate        | [@sofiaalzate11](https://github.com/sofiaalzate11)       |
 | [Integrante 4]      | [GitHub](https://github.com/)                            |
 | [Integrante 5]      | [GitHub](https://github.com/)                            |
-
----
-
-## 📄 Licencia
-
-Este proyecto está bajo la licencia **MIT**. Ver archivo LICENSE para más detalles.
 
 ---
 
