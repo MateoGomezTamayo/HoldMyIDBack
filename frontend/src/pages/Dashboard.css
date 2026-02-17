@@ -29,6 +29,9 @@
   border-radius: 12px;
   padding: 30px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .perfil-info h2 {
@@ -84,6 +87,25 @@
   box-shadow: 0 8px 30px rgba(102, 126, 234, 0.6);
 }
 
+.btn-logout {
+  padding: 10px 25px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 5px 20px rgba(239, 68, 68, 0.4);
+  flex-shrink: 0;
+}
+
+.btn-logout:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(239, 68, 68, 0.6);
+}
+
 @media (max-width: 768px) {
   .dashboard {
     padding: 20px 10px;
@@ -95,6 +117,12 @@
 
   .perfil-section {
     padding: 20px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .btn-logout {
+    margin-top: 15px;
   }
 
   .carnets-grid {

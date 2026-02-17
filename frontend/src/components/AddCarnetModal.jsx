@@ -17,7 +17,6 @@ function AddCarnetModal({ isOpen, onClose, onCarnetAdded, token, usuarioId, carn
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [tiempoExpiracion, setTiempoExpiracion] = useState(10);
-  const [verificado, setVerificado] = useState(false);
   const [correoEnviado, setCorreoEnviado] = useState('');
 
   // Detectar qué carnets ya tiene
@@ -33,7 +32,6 @@ function AddCarnetModal({ isOpen, onClose, onCarnetAdded, token, usuarioId, carn
       setTipoCarnet(null);
       setForm({ cedula: '', tipo_credencial: '', numero: '' });
       setCodigo('');
-      setVerificado(false);
       setCorreoEnviado('');
       setTiempoExpiracion(10);
     }
@@ -60,7 +58,6 @@ function AddCarnetModal({ isOpen, onClose, onCarnetAdded, token, usuarioId, carn
     setForm({ cedula: '', tipo_credencial: '', numero: '' });
     setCodigo('');
     setError('');
-    setVerificado(false);
     setPaso(2);
   };
 
@@ -123,7 +120,6 @@ function AddCarnetModal({ isOpen, onClose, onCarnetAdded, token, usuarioId, carn
       );
 
       if (response.data.success) {
-        setVerificado(true);
         setSuccess('¡Identidad verificada correctamente!');
         setPaso(4);
         setTimeout(() => setSuccess(''), 2000);

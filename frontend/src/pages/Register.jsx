@@ -19,7 +19,6 @@ function Register() {
     rol: 'ESTUDIANTE',
   });
   const [codigo, setCodigo] = useState('');
-  const [datosTemporales, setDatosTemporales] = useState(null);
   const [correoEnviado, setCorreoEnviado] = useState('');
   const [tiempoExpiracion, setTiempoExpiracion] = useState(10);
   const [error, setError] = useState('');
@@ -52,7 +51,6 @@ function Register() {
       const response = await axios.post(`${API_URL}/api/auth/registro`, form);
 
       if (response.data.success) {
-        setDatosTemporales(form);
         setCorreoEnviado(response.data.data.correo);
         setTiempoExpiracion(response.data.data.tiempoExpiracion);
         setPaso(2);
@@ -83,8 +81,6 @@ function Register() {
       if (!codigo || codigo.length !== 6) {
         throw new Error('Ingresa un código válido de 6 dígitos');
       }
-
-      const identificador = form.rol === 'ESTUDIANTE' ? form.codigo_estudiante : form.cedula;
 
       const response = await axios.post(`${API_URL}/api/auth/verificar-registro`, {
         codigo,
