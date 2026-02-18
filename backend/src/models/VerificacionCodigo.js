@@ -20,7 +20,7 @@ const VerificacionCodigo = sequelize.define('VerificacionCodigo', {
     allowNull: false,
   },
   cedula: {
-    type: DataTypes.STRING(20),
+    type: DataTypes.STRING(50),
     allowNull: false,
   },
   tipo: {

@@ -47,7 +47,7 @@ const registro = async (req, res) => {
     // Validar que exista en la tabla base (estudiantes/empleados)
     let registroBase;
     let identificador;
-    let correoRegistro;
+    let correoRegistro; // un solo nombre usado en todo el flujo
 
     if (rolFinal === 'ESTUDIANTE') {
       registroBase = await Estudiante.findOne({
@@ -62,7 +62,7 @@ const registro = async (req, res) => {
       }
 
       identificador = codigo_estudiante;
-      correoRegistro = registroBase.correo;
+      correoRegistro = registroBase.correo; // campo DB en minúsculas
 
       if (!correoRegistro) {
         return res.status(400).json({

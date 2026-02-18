@@ -12,6 +12,11 @@ const Estudiante = sequelize.define('Estudiante', {
     allowNull: false,
     unique: true,
   },
+  correo: {
+    type: DataTypes.STRING(255),
+    allowNull: true,
+    field: 'correo',
+  },
   carrera: {
     type: DataTypes.STRING(100),
     allowNull: true,

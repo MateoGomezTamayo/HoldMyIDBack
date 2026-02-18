@@ -6,6 +6,7 @@ const sequelize = require('./config/database');
 const authRoutes = require('./routes/authRoutes');
 const carnetRoutes = require('./routes/carnetRoutes');
 const usuarioRoutes = require('./routes/usuarioRoutes');
+const validacionRoutes = require('./routes/validacionRoutes');
 const crearBaseDatos = require('./utils/crearBaseDatos');
 
 const app = express();
@@ -47,6 +48,7 @@ app.get('/', (req, res) => {
       auth: '/api/auth',
       usuarios: '/api/usuarios',
       carnets: '/api/carnets',
+      validacion: '/api/validacion',
     },
   });
 });
@@ -58,6 +60,9 @@ app.use('/api/auth', authRoutes);
 app.use('/api/usuarios', usuarioRoutes);
 
 // Rutas de carnets
+
+// Rutas de validación
+app.use('/api/validacion', validacionRoutes);
 app.use('/api/carnets', carnetRoutes);
 
 // Manejo de errores para rutas no encontradas
