@@ -176,6 +176,8 @@ const registro = async (req, res) => {
     // En desarrollo, mostrar el código en consola
     if (process.env.NODE_ENV === 'development') {
       responseData.codigo = codigo; // Agregar código solo en desarrollo
+      responseData.requiereVerificacion = true;
+      responseData.usuarioTemp = datosEncriptados; // Para que puedas reutilizar los datos
     }
 
     res.status(200).json({

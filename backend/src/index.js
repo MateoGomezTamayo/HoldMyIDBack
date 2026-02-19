@@ -60,10 +60,10 @@ app.use('/api/auth', authRoutes);
 app.use('/api/usuarios', usuarioRoutes);
 
 // Rutas de carnets
+app.use('/api/carnets', carnetRoutes);
 
 // Rutas de validación
 app.use('/api/validacion', validacionRoutes);
-app.use('/api/carnets', carnetRoutes);
 
 // Manejo de errores para rutas no encontradas
 app.use((req, res) => {
