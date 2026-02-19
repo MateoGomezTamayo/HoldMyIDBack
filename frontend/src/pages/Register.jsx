@@ -58,7 +58,7 @@ function Register() {
         
         // Mostrar código en consola si está en desarrollo
         if (response.data.data.codigo) {
-          console.log('%c🔐 CÓDIGO DE VERIFICACIÓN', 'font-size: 16px; font-weight: bold; color: #667eea;');
+          console.log('%c🔐 CÓDIGO DE VERIFICACIÓN', 'font-size: 16px; font-weight: bold; color: #7B3FE4;');
           console.log('%c' + response.data.data.codigo, 'font-size: 24px; font-weight: bold; color: #22c55e; letter-spacing: 5px;');
         }
         

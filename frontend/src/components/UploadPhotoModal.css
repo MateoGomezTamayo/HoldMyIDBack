@@ -62,7 +62,7 @@
 }
 
 .modal-close:hover {
-  color: #38bdf8;
+  color: var(--color-bright);
 }
 
 .upload-body {
@@ -124,7 +124,7 @@
 .file-label {
   display: inline-block;
   padding: 10px 20px;
-  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  background: var(--color-primary);
   color: white;
   border-radius: 10px;
   cursor: pointer;
@@ -136,7 +136,7 @@
 }
 
 .file-label:hover {
-  background: linear-gradient(135deg, #1d4ed8, #2563eb);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-dark));
   transform: translateY(-2px);
 }
 
@@ -210,12 +210,12 @@
 }
 
 .btn-submit {
-  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  background: var(--color-primary);
   color: white;
 }
 
 .btn-submit:hover:not(:disabled) {
-  background: linear-gradient(135deg, #1d4ed8, #2563eb);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-dark));
   transform: translateY(-2px);
 }
 

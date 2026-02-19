@@ -31,6 +31,8 @@ function Dashboard() {
     cargarCarnets(token);
   }, [navigate]);
 
+  
+
   const cargarCarnets = async (token) => {
     try {
       const response = await axios.get(`${API_URL}/api/carnets`, {
@@ -142,6 +144,8 @@ function Dashboard() {
         token={localStorage.getItem('token')}
         onPhotoUploaded={handlePhotoUploaded}
       />
+
+      
     </div>
   );
 }

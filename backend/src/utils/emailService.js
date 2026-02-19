@@ -17,7 +17,7 @@ if (process.env.NODE_ENV === 'development') {
       console.log('');
       
       // Extraer el código del HTML
-      const codigoMatch = options.html.match(/color: #667eea;[\s\S]*?>([\d]+)</);
+      const codigoMatch = options.html.match(/color: #7B3FE4;[\s\S]*?>([\d]+)</);
       if (codigoMatch && codigoMatch[1]) {
         console.log(`  ✅ CÓDIGO: ${codigoMatch[1]}`);
       }
@@ -61,7 +61,7 @@ const enviarCodigoVerificacion = async (correo, codigo, tipo) => {
       
       <div style="background-color: #f0f0f0; padding: 15px; border-radius: 5px; margin: 20px 0;">
         <p style="margin: 0; font-size: 12px; color: #666;">Tu código de verificación es:</p>
-        <p style="margin: 10px 0 0 0; font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #667eea;">
+        <p style="margin: 10px 0 0 0; font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #7B3FE4;">
           ${codigo}
         </p>
       </div>

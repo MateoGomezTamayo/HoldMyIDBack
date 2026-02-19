@@ -1,18 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap');
 
 :root {
-  --home-bg: #0b1226;
-  --home-accent: #2563eb;
-  --home-accent-2: #14b8a6;
-  --home-card: #0f1b3d;
-  --home-text: #e2e8f0;
+  --home-bg: #5A2EA6;
+  --home-accent: #7B3FE4;
+  --home-accent-2: #C8A8FF;
+  --home-card: #472d6d;
+  --home-text: #f5f5f5;
 }
 
 .home {
   min-height: 100vh;
   display: grid;
   place-items: center;
-  background: radial-gradient(circle at top, #1e293b 0%, #0b1226 55%, #070b19 100%);
+  background: radial-gradient(circle at top, var(--home-bg) 0%, var(--home-bg) 55%, #2b2060 100%);
   font-family: 'Space Grotesk', sans-serif;
   padding: 24px;
 }
@@ -64,9 +64,9 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--home-accent), #3b82f6);
+  background: linear-gradient(135deg, var(--home-accent), var(--home-accent-2));
   color: white;
-  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.35);
+  box-shadow: 0 10px 25px rgba(123, 63, 228, 0.35);
 }
 
 .btn-outline {

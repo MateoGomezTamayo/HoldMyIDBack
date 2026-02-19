@@ -64,7 +64,7 @@
 }
 
 .modal-close:hover {
-  color: #38bdf8;
+  color: var(--color-bright);
 }
 
 .modal-form {
@@ -93,7 +93,7 @@
 
 .modal-field input:focus {
   outline: none;
-  border-color: #2563eb;
+  border-color: var(--color-bright);
   background: rgba(2, 6, 23, 0.8);
 }
 
@@ -143,12 +143,12 @@
 }
 
 .btn-submit {
-  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  background: var(--color-primary);
   color: white;
 }
 
 .btn-submit:hover:not(:disabled) {
-  background: linear-gradient(135deg, #1d4ed8, #2563eb);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-dark));
   transform: translateY(-2px);
 }
 
@@ -198,15 +198,15 @@
   gap: 6px;
 }
 
-.tipo-btn:hover:not(:disabled) {
-  border-color: #2563eb;
-  background: rgba(37, 99, 235, 0.1);
+..tipo-btn:hover:not(:disabled) {
+  border-color: var(--color-bright);
+  background: rgba(91, 46, 166, 0.1);
 }
 
 .tipo-btn.active {
-  border-color: #2563eb;
-  background: rgba(37, 99, 235, 0.2);
-  color: #60a5fa;
+  border-color: var(--color-bright);
+  background: rgba(91, 46, 166, 0.2);
+  color: var(--color-primary);
 }
 
 .tipo-btn.disabled {
