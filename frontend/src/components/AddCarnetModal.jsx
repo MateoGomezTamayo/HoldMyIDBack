@@ -72,7 +72,7 @@ function AddCarnetModal({ isOpen, onClose, onCarnetAdded, token, usuarioId, carn
       }
 
       const response = await axios.post(
-        `${API_URL}/api/validate/send-code`,
+        `${API_URL}/api/validacion/send-code`,
         {
           cedula: form.cedula,
           tipo: tipoCarnet,
@@ -108,7 +108,7 @@ function AddCarnetModal({ isOpen, onClose, onCarnetAdded, token, usuarioId, carn
       }
 
       const response = await axios.post(
-        `${API_URL}/api/validate/verify-code`,
+        `${API_URL}/api/validacion/verify-code`,
         {
           cedula: form.cedula,
           tipo: tipoCarnet,
@@ -141,19 +141,17 @@ function AddCarnetModal({ isOpen, onClose, onCarnetAdded, token, usuarioId, carn
         throw new Error('El tipo de credencial y número son requeridos');
       }
 
-      await axios.post(
-        `${API_URL}/api/carnets`,
-        {
-          cedula: form.cedula,
-          tipo: tipoCarnet,
-          tipo_credencial: form.tipo_credencial,
-          numero: form.numero,
-          verificado: true,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const esEstudiante = tipoCarnet === 'ESTUDIANTE';
+      const endpoint = esEstudiante
+        ? `${API_URL}/api/carnets/agregar-estudiante`
+        : `${API_URL}/api/carnets/agregar-empleado`;
+      const payload = esEstudiante
+        ? { codigo_estudiante: form.cedula }
+        : { cedula: form.cedula };
+
+      await axios.post(endpoint, payload, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       setSuccess('¡Carnet agregado exitosamente!');
       setTimeout(() => {
