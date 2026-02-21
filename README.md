@@ -124,22 +124,6 @@ JWT_SECRET=tu_secret_key_super_segura_aqui_cambiar_en_produccion
 NODE_ENV=development
 ```
 
-### 4️⃣ Instalar Dependencias
-
-#### Backend
-
-```bash
-cd backend
-npm install
-```
-
-#### Frontend
-
-```bash
-cd frontend
-npm install
-```
-
 ### 5️⃣ Instalar Dependencias
 
 #### Backend
