@@ -7,22 +7,36 @@
 }
 
 .auth-page {
+  position: relative;
   min-height: 100vh;
   display: grid;
   place-items: center;
-  background: var(--color-dark);
+  background-color: #2b2060;
   font-family: 'Space Grotesk', sans-serif;
   color: #e2e8f0;
   padding: 24px;
 }
 
+.blob-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 0;
+}
+
 .auth-card {
+  position: relative;
+  z-index: 1;
   width: min(520px, 92vw);
-  background: rgba(15, 23, 42, 0.92);
+    background: linear-gradient(145deg, rgba(15, 27, 61, 0.95), rgba(7, 11, 25, 0.95));
   border: 1px solid rgba(148, 163, 184, 0.2);
   border-radius: 18px;
+  border-color: #ffffff;
   padding: 28px;
   box-shadow: 0 18px 50px rgba(2, 6, 23, 0.5);
+  
 }
 
 .auth-card h1 {
@@ -105,4 +119,53 @@
   border-radius: 10px;
   color: #bbf7d0;
   font-size: 0.9rem;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.out-top {
+  animation: rotate 20s linear infinite;
+  transform-origin: 13px 25px;
+}
+
+.in-top {
+  animation: rotate 10s linear infinite;
+  transform-origin: 13px 25px;
+}
+
+.out-bottom {
+  animation: rotate 25s linear infinite;
+  transform-origin: 84px 93px;
+}
+
+.in-bottom {
+  animation: rotate 15s linear infinite;
+  transform-origin: 84px 93px;
+}
+
+.blob-blur {
+  filter: blur(40px);
+}
+
+.blob-blur .out-top {
+  animation: rotate 8s linear infinite;
+}
+
+.blob-blur .in-top {
+  animation: rotate 5s linear infinite;
+}
+
+.blob-blur .out-bottom {
+  animation: rotate 10s linear infinite;
+}
+
+.blob-blur .in-bottom {
+  animation: rotate 6s linear infinite;
 }
