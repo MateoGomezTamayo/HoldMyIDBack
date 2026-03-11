@@ -38,6 +38,44 @@
   box-shadow: 0 18px 50px rgba(2, 6, 23, 0.5);
   
 }
+@media (max-width: 768px) {
+  .auth-card {
+    padding: 16px;
+    width: min(340px, 98vw);
+  }
+  .auth-card h1 {
+    font-size: 1.2rem;
+  }
+  .auth-field input,
+  .auth-field select {
+    padding: 8px 8px;
+    font-size: 0.95rem;
+  }
+  .auth-button {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    border-radius: 10px;
+  }
+}
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 8px;
+    width: min(220px, 99vw);
+  }
+  .auth-card h1 {
+    font-size: 1rem;
+  }
+  .auth-field input,
+  .auth-field select {
+    padding: 6px 6px;
+    font-size: 0.8rem;
+  }
+  .auth-button {
+    padding: 6px 8px;
+    font-size: 0.8rem;
+    border-radius: 8px;
+  }
+}
 
 .auth-card h1 {
   margin: 0 0 8px 0;

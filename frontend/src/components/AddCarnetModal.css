@@ -180,6 +180,46 @@
   grid-template-columns: 1fr 1fr;
   gap: 10px;
 }
+@media (max-width: 768px) {
+  .modal-content {
+    padding: 12px;
+    max-width: 320px;
+    width: 98vw;
+  }
+  .modal-header h2 {
+    font-size: 1rem;
+  }
+  .btn-cancel,
+  .btn-submit {
+    padding: 8px 10px;
+    font-size: 0.9rem;
+    border-radius: 8px;
+  }
+  .tipo-btn {
+    font-size: 0.8rem;
+    padding: 8px 8px;
+  }
+}
+@media (max-width: 480px) {
+  .modal-content {
+    padding: 6px;
+    max-width: 180px;
+    width: 99vw;
+  }
+  .modal-header h2 {
+    font-size: 0.8rem;
+  }
+  .btn-cancel,
+  .btn-submit {
+    padding: 6px 6px;
+    font-size: 0.7rem;
+    border-radius: 6px;
+  }
+  .tipo-btn {
+    font-size: 0.7rem;
+    padding: 6px 6px;
+  }
+}
 
 .tipo-btn {
   position: relative;

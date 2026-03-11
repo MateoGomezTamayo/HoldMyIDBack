@@ -103,6 +103,27 @@
     font-size: 2rem;
   }
 }
+@media (max-width: 768px) {
+  .home-card {
+    padding: 16px;
+    width: min(340px, 98vw);
+  }
+  .home-badge {
+    font-size: 32px;
+  }
+}
+@media (max-width: 480px) {
+  .home-card {
+    padding: 8px;
+    width: min(220px, 99vw);
+  }
+  .home-badge {
+    font-size: 18px;
+  }
+  .home-card h1 {
+    font-size: 1.1rem;
+  }
+}
 
 @keyframes rotate {
   0% {
