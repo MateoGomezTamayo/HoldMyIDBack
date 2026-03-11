@@ -1,1 +1,45 @@
+name: Deploy React to Hostinger via FTP
 
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Chequear repo
+        uses: actions/checkout@v4
+
+      - name: Configurar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Construir React
+        run: npm run build
+
+      - name: Crear .htaccess para React Router
+        run: |
+          printf '%s\n' \
+          'RewriteEngine On' \
+          'RewriteBase /' \
+          'RewriteRule ^index\.html$ - [L]' \
+          'RewriteCond %{REQUEST_FILENAME} !-f' \
+          'RewriteCond %{REQUEST_FILENAME} !-d' \
+          'RewriteRule . /index.html [L]' > build/.htaccess
+
+      - name: Deploy a Hostinger via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: build
+          server-dir: ${{ secrets.FTP_PATH }}
+          log-level: verbose
