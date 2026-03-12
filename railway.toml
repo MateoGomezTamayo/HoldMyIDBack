@@ -8,18 +8,26 @@ start = "npm start"
 
 [services.backend.env]
 PORT = "8080"
-# Completa estos con valores reales o usa Variables en la UI
-DB_HOST = ""
-DB_USER = ""
-DB_PASSWORD = ""
-DB_NAME = ""
-JWT_SECRET = ""
+DB_HOST = ""        # COMPLETA o usa Variables en la UI
+DB_USER = ""        # COMPLETA
+DB_PASSWORD = ""    # COMPLETA
+DB_NAME = ""        # COMPLETA
+JWT_SECRET = ""     # COMPLETA
+
+# (Opcional) Healthcheck si tienes un endpoint de salud
+# [services.backend.healthcheck]
+# path = "/health"
+# port = 8080
+# interval = 10
+# timeout = 5
+# retries = 6
 
 # ----- Servicio: Frontend -----
 [services.frontend]
 root = "frontend"
 build = "npm install && npm run build"
-start = "npm run preview"
+start = "npm run preview"   # o servir estático si usas Static Sites
 
 [services.frontend.env]
-VITE_API_URL = "https://<TU-BACKEND>.up.railway.app"
+# Pon aquí la URL real de tu backend cuando la tengas, o configúrala en Variables del servicio.
+VITE_API_URL = ""
