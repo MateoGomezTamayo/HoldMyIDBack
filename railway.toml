@@ -1,0 +1,25 @@
+# railway.toml
+
+# ----- Servicio: Backend -----
+[services.backend]
+root = "backend"
+build = "npm install"
+start = "npm start"
+
+[services.backend.env]
+PORT = "8080"
+# Completa estos con valores reales o usa Variables en la UI
+DB_HOST = ""
+DB_USER = ""
+DB_PASSWORD = ""
+DB_NAME = ""
+JWT_SECRET = ""
+
+# ----- Servicio: Frontend -----
+[services.frontend]
+root = "frontend"
+build = "npm install && npm run build"
+start = "npm run preview"
+
+[services.frontend.env]
+VITE_API_URL = "https://<TU-BACKEND>.up.railway.app"
