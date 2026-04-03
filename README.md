@@ -122,6 +122,9 @@ JWT_SECRET=tu_secret_key_super_segura_aqui_cambiar_en_produccion
 
 # Entorno
 NODE_ENV=development
+
+# Clave opcional para lectores RFID (header x-rfid-device-key)
+RFID_DEVICE_KEY=clave_segura_para_dispositivos_rfid
 ```
 
 ### 5️⃣ Instalar Dependencias
@@ -182,6 +185,9 @@ Se abrirá automáticamente en `http://localhost:3000`
 | POST   | `/api/carnets/agregar-estudiante` | Agregar carnet ESTUDIANTE (verifica propietario) |
 | POST   | `/api/carnets/agregar-empleado`   | Agregar carnet EMPLEADO (verifica propietario)   |
 | PUT    | `/api/carnets/:carnetId/foto`     | Subir foto de perfil (multer)                    |
+| PUT    | `/api/carnets/:id/rfid`           | Vincular UID RFID a un carnet del usuario        |
+| DELETE | `/api/carnets/:id/rfid`           | Desvincular UID RFID de un carnet                |
+| POST   | `/api/carnets/rfid/validar`       | Validar escaneo RFID para acceso físico          |
 
 ---
 

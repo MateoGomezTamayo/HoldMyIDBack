@@ -54,6 +54,19 @@ const Carnet = sequelize.define('Carnet', {
     type: DataTypes.BLOB('long'),
     allowNull: true,
   },
+  rfid_uid: {
+    type: DataTypes.STRING(100),
+    allowNull: true,
+    unique: true,
+  },
+  rfid_activo: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
+  rfid_ultima_lectura: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
   activo: {
     type: DataTypes.BOOLEAN,
     defaultValue: true,

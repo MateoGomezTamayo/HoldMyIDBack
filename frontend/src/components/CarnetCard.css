@@ -3,7 +3,8 @@
   cursor: pointer;
   width: 100%;
   max-width: 350px;
-  height: 500px;
+  aspect-ratio: 7 / 10;
+  height: auto;
 }
 
 .carnet-card {
@@ -40,7 +41,7 @@
 }
 
 .franja-superior {
-  height: 100px;
+  height: 110px;
   background: linear-gradient(135deg, rgba(9, 28, 92, 0.9) 0%, rgba(37, 99, 235, 0.9) 100%);
   clip-path: polygon(0% 0%, 100% 0%, 20% 0%, 0% 100%);
 }
@@ -50,7 +51,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 130px 20px 0 20px;
+  padding: 26px 20px 0 20px;
+  margin-top: -58px;
 }
 
 .carnet-foto {
@@ -59,7 +61,7 @@
   border-radius: 10px;
   object-fit: cover;
   border: 3px solid #e5e7eb;
-  margin-top: -70%;
+  margin-top: 0;
 }
 
 .carnet-foto-placeholder {
@@ -67,7 +69,7 @@
   height: 180px;
   border-radius: 10px;
   border: 3px solid #e5e7eb;
-  margin-top: -70%;
+  margin-top: 0;
   background: linear-gradient(135deg, rgba(148, 163, 184, 0.2) 0%, rgba(148, 163, 184, 0.1) 100%);
   display: flex;
   align-items: center;
@@ -79,20 +81,20 @@
 .carnet-footer {
   padding: 8px 16px;
   text-align: center;
-  margin-top: -28px;
+  margin-top: 10px;
 }
 
 .carnet-nombre {
   font-size: 1.1rem;
-  font-weight: 00;
-  margin-bottom: 1px;
+  font-weight: 700;
+  margin-bottom: 2px;
   color: white;
   background: linear-gradient(135deg, rgba(9, 28, 92, 0.9) 0%, rgba(17, 57, 143, 0.9) 100%);
-  padding: 2px 116px;
+  padding: 3px 18px;
   border-radius: 4px;
   display: inline-block;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 10% 100%);
+  clip-path: polygon(0 0, 100% 0, 94% 100%, 0 100%);
 }
 
 
@@ -100,7 +102,7 @@
   font-size: 1.1rem;
   font-weight: 600;
   color: #5b0e99;
-  margin-bottom: 35px;
+  margin-bottom: 8px;
   text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
 }
 
@@ -108,7 +110,7 @@
   font-size: 0.95rem;
   font-weight: 700;
   color: #1e293b;
-  margin: -32px 0 8px;
+  margin: 0 0 8px;
   text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
 }
 
@@ -120,7 +122,7 @@
 }
 
 .carnet-carrera-wrapper {
-  transform: translateY(40px);
+  margin-top: 0;
 }
 
 
@@ -135,13 +137,48 @@
 
 
 .carnet-tipo-wrapper {
-  transform: translateY(50px);
+  margin-top: 6px;
+}
+
+.carnet-rfid-status {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.carnet-rfid-status.ok {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.carnet-rfid-status.off {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.btn-rfid-activate {
+  display: inline-block;
+  margin-top: 6px;
+  border: none;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, #0f3e9f 0%, #2563eb 100%);
+  cursor: pointer;
+}
+
+.btn-rfid-activate:hover {
+  opacity: 0.95;
 }
 
 .carnet-logo {
   width: 100px;
   height: auto;
-  margin-top: 90px;
+  margin-top: 14px;
   opacity: 0.9;
 }
 
@@ -186,22 +223,122 @@
 }
 
 .carnet-back p {
-  margin: 20px 0 0 0;
+  margin: 8px 0 0 0;
   font-size: 0.95rem;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-@media (max-width: 480px) {
+.carnet-back-rfid {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+@media (max-width: 768px) {
   .carnet-container {
-    max-width: 100%;
+    max-width: 320px;
+    width: min(92vw, 320px);
   }
 
-  .carnet-foto {
-    width: 120px;
-    height: 120px;
+  .franja-superior {
+    height: 96px;
+  }
+
+  .carnet-foto-section {
+    margin-top: -52px;
+    padding-top: 20px;
+  }
+
+  .carnet-foto,
+  .carnet-foto-placeholder {
+    width: 126px;
+    height: 158px;
+  }
+
+  .carnet-footer {
+    margin-top: 8px;
+    padding: 8px 12px;
+  }
+
+  .carnet-nombre,
+  .carnet-apellidos {
+    font-size: 0.98rem;
+  }
+
+  .carnet-codigo,
+  .carnet-carrera,
+  .carnet-tipo {
+    font-size: 0.82rem;
+  }
+
+  .carnet-logo {
+    width: 82px;
+    margin-top: 10px;
+  }
+
+  .carnet-back h3 {
+    font-size: 1.05rem;
+    margin-bottom: 12px;
+  }
+
+  .qr-box,
+  .qr-image {
+    width: 126px;
+    height: 126px;
+    margin-bottom: 12px;
+  }
+
+  .btn-rfid-activate {
+    font-size: 0.72rem;
+    padding: 5px 10px;
+  }
+}
+
+@media (max-width: 430px) {
+  .carnet-container {
+    width: min(94vw, 305px);
+  }
+
+  .franja-superior {
+    height: 90px;
+  }
+
+  .carnet-foto-section {
+    margin-top: -48px;
+  }
+
+  .carnet-foto,
+  .carnet-foto-placeholder {
+    width: 118px;
+    height: 146px;
   }
 
   .carnet-nombre {
-    font-size: 1.3rem;
+    font-size: 0.92rem;
+    padding: 2px 12px;
+  }
+
+  .carnet-apellidos {
+    font-size: 0.92rem;
+  }
+
+  .carnet-codigo,
+  .carnet-carrera,
+  .carnet-tipo {
+    font-size: 0.78rem;
+  }
+
+  .carnet-back h3 {
+    font-size: 0.98rem;
+  }
+
+  .carnet-back p {
+    font-size: 0.85rem;
+  }
+
+  .carnet-rfid-status {
+    font-size: 0.66rem;
   }
 }

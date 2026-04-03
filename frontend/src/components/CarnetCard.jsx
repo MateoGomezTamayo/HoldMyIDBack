@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import './CarnetCard.css';
 import fondoCarnet from '../assets/images/Fondo_Carnet.png';
 import logoIush from '../assets/images/LogoIush.png';
+import RfidActivateModal from './RfidActivateModal';
 
-function CarnetCard({ estudiante }) {
+function CarnetCard({ estudiante, token, onRfidUpdated }) {
   const [isFlipped, setIsFlipped] = useState(false);
+  const [showRfidModal, setShowRfidModal] = useState(false);
   const qrSrc = estudiante.qr_base64
     ? `data:image/png;base64,${estudiante.qr_base64}`
     : null;
@@ -57,8 +59,30 @@ function CarnetCard({ estudiante }) {
             <div className="qr-box"></div>
           )}
           <p>{estudiante.codigo_estudiante}</p>
+          <div className="carnet-back-rfid">
+            <span className={`carnet-rfid-status ${estudiante.rfid_activo ? 'ok' : 'off'}`}>
+              {estudiante.rfid_activo ? 'RFID Activo' : 'RFID Inactivo'}
+            </span>
+            <button
+              className="btn-rfid-activate"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowRfidModal(true);
+              }}
+            >
+              Activar UID
+            </button>
+          </div>
         </div>
       </div>
+
+      <RfidActivateModal
+        isOpen={showRfidModal}
+        onClose={() => setShowRfidModal(false)}
+        carnet={estudiante}
+        token={token}
+        onRfidUpdated={onRfidUpdated}
+      />
     </div>
   );
 }

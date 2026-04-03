@@ -8,7 +8,6 @@ const carnetRoutes = require('./routes/carnetRoutes');
 const usuarioRoutes = require('./routes/usuarioRoutes');
 const validacionRoutes = require('./routes/validacionRoutes');
 const crearBaseDatos = require('./utils/crearBaseDatos');
-const generalLimiter = require('./middleware/generalLimiter');
 
 const app = express();
 
@@ -16,13 +15,19 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(generalLimiter);
 
 // Inicializar servidor
 const inicializarServidor = async () => {
   try {
     // Crear base de datos si no existe
-    await crearBaseDatos();
+    const baseDatosLista = await crearBaseDatos();
+    if (!baseDatosLista) {
+      throw new Error('No fue posible crear/conectar la base de datos con las credenciales configuradas.');
+    }
+
+    // Validar conexión antes de sincronizar modelos
+    await sequelize.authenticate();
+    console.log('✓ Conexión a MySQL establecida correctamente');
 
     // Sincronizar modelos con la base de datos
     await sequelize.sync();

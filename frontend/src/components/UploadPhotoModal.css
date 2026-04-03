@@ -223,3 +223,45 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+@media (max-width: 480px) {
+  .upload-photo-modal-overlay {
+    align-items: flex-end;
+    padding: 8px;
+  }
+
+  .upload-photo-modal {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 16px 16px 12px 12px;
+    padding: 14px;
+    max-height: 92vh;
+    overflow-y: auto;
+  }
+
+  .upload-photo-modal h2 {
+    font-size: 1.05rem;
+    margin-bottom: 12px;
+  }
+
+  .upload-photo-label {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+
+  .photo-preview {
+    max-height: 180px;
+  }
+
+  .upload-photo-actions {
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .btn-cancel,
+  .btn-submit {
+    width: 100%;
+    min-height: 42px;
+  }
+}

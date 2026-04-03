@@ -50,6 +50,8 @@ function Dashboard() {
         carrera: carnet.carrera || null,
         cargo: carnet.cargo || null,
         rol: carnet.rol,
+        rfid_uid: carnet.rfid_uid || null,
+        rfid_activo: Boolean(carnet.rfid_activo),
         foto_url: carnet.foto_base64 ? `data:image/jpeg;base64,${carnet.foto_base64}` : null,
         qr_base64: carnet.qr_base64,
       }));
@@ -117,7 +119,14 @@ function Dashboard() {
           <h3>Mis Carnets ({carnets.length})</h3>
           <div className="carnets-grid">
             {carnets.length > 0 ? (
-              carnets.map((carnet) => <CarnetCard key={carnet.id} estudiante={carnet} />)
+              carnets.map((carnet) => (
+                <CarnetCard
+                  key={carnet.id}
+                  estudiante={carnet}
+                  token={localStorage.getItem('token')}
+                  onRfidUpdated={handleCarnetAdded}
+                />
+              ))
             ) : (
               <p>No tienes carnets aún.</p>
             )}

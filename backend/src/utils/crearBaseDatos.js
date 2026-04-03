@@ -23,6 +23,12 @@ const crearBaseDatos = async () => {
 
     return true;
   } catch (error) {
+    if (error.code === 'ER_ACCESS_DENIED_ERROR') {
+      console.error(
+        `✗ Acceso denegado a MySQL para ${process.env.DB_USER}@${process.env.DB_HOST}. ` +
+        'Verifica DB_USER y DB_PASS en backend/.env o crea un usuario con permisos.'
+      );
+    }
     console.error('✗ Error al crear base de datos:', error.message);
     return false;
   }

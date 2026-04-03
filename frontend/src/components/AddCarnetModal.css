@@ -180,46 +180,6 @@
   grid-template-columns: 1fr 1fr;
   gap: 10px;
 }
-@media (max-width: 768px) {
-  .modal-content {
-    padding: 12px;
-    max-width: 320px;
-    width: 98vw;
-  }
-  .modal-header h2 {
-    font-size: 1rem;
-  }
-  .btn-cancel,
-  .btn-submit {
-    padding: 8px 10px;
-    font-size: 0.9rem;
-    border-radius: 8px;
-  }
-  .tipo-btn {
-    font-size: 0.8rem;
-    padding: 8px 8px;
-  }
-}
-@media (max-width: 480px) {
-  .modal-content {
-    padding: 6px;
-    max-width: 180px;
-    width: 99vw;
-  }
-  .modal-header h2 {
-    font-size: 0.8rem;
-  }
-  .btn-cancel,
-  .btn-submit {
-    padding: 6px 6px;
-    font-size: 0.7rem;
-    border-radius: 6px;
-  }
-  .tipo-btn {
-    font-size: 0.7rem;
-    padding: 6px 6px;
-  }
-}
 
 .tipo-btn {
   position: relative;
@@ -238,7 +198,7 @@
   gap: 6px;
 }
 
-..tipo-btn:hover:not(:disabled) {
+.tipo-btn:hover:not(:disabled) {
   border-color: var(--color-bright);
   background: rgba(91, 46, 166, 0.1);
 }
@@ -273,4 +233,44 @@
   border-radius: 10px;
   background: rgba(239, 68, 68, 0.1);
   border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+@media (max-width: 480px) {
+  .modal-overlay {
+    align-items: flex-end;
+    padding: 8px;
+  }
+
+  .modal-content {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 16px 16px 12px 12px;
+    padding: 14px;
+    max-height: 92vh;
+    overflow-y: auto;
+  }
+
+  .modal-header {
+    margin-bottom: 12px;
+  }
+
+  .modal-header h2 {
+    font-size: 1.05rem;
+  }
+
+  .tipo-buttons {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .btn-cancel,
+  .btn-submit {
+    width: 100%;
+    min-height: 42px;
+  }
 }

@@ -2,7 +2,6 @@ const express = require('express');
 const multer = require('multer');
 const router = express.Router();
 const authMiddleware = require('../middleware/auth');
-const generalLimiter = require('../middleware/generalLimiter');
 const {
   obtenerCarnets,
   obtenerCarnetPorId,
@@ -12,6 +11,9 @@ const {
   agregarEmpleado,
   agregarEstudiante,
   actualizarFotoCarnet,
+  vincularRfidCarnet,
+  desvincularRfidCarnet,
+  validarAccesoRfid,
 } = require('../controllers/carnetController');
 
 // Configurar multer para fotos
@@ -46,9 +48,11 @@ router.get('/status', (req, res) => {
   });
 });
 
+// POST /api/carnets/rfid/validar - Validar UID RFID para acceso físico (PÚBLICA con clave de dispositivo opcional)
+router.post('/rfid/validar', validarAccesoRfid);
+
 // RUTAS PROTEGIDAS (requieren autenticación)
 router.use(authMiddleware);
-router.use(generalLimiter);
 
 // GET /api/carnets - Obtener todos los carnets del usuario
 router.get('/', obtenerCarnets);
@@ -61,6 +65,12 @@ router.post('/agregar-empleado', agregarEmpleado);
 
 // PUT /api/carnets/:carnetId/foto - Actualizar foto del carnet
 router.put('/:carnetId/foto', upload.single('foto'), actualizarFotoCarnet);
+
+// PUT /api/carnets/:id/rfid - Vincular UID RFID al carnet
+router.put('/:id/rfid', vincularRfidCarnet);
+
+// DELETE /api/carnets/:id/rfid - Desvincular UID RFID del carnet
+router.delete('/:id/rfid', desvincularRfidCarnet);
 
 // GET /api/carnets/:id - Obtener un carnet específico
 router.get('/:id', obtenerCarnetPorId);

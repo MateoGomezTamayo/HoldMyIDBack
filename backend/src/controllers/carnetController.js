@@ -2,6 +2,27 @@ const { Carnet, Usuario, Empleado, Estudiante } = require('../models');
 const { Op } = require('sequelize');
 const QRCode = require('qrcode');
 
+const sanitizeRfidUid = (uid) => String(uid || '').trim().toUpperCase();
+
+const validarClaveDispositivoRFID = (req, res) => {
+  const expectedKey = process.env.RFID_DEVICE_KEY;
+
+  if (!expectedKey) {
+    return true;
+  }
+
+  const providedKey = req.headers['x-rfid-device-key'];
+  if (providedKey !== expectedKey) {
+    res.status(401).json({
+      success: false,
+      message: 'Dispositivo RFID no autorizado',
+    });
+    return false;
+  }
+
+  return true;
+};
+
 const mapCarnet = (carnet) => {
   const data = carnet.toJSON();
   return {
@@ -558,6 +579,189 @@ const actualizarFotoCarnet = async (req, res) => {
   }
 };
 
+// Vincular UID RFID a un carnet del usuario autenticado
+const vincularRfidCarnet = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.usuario.id;
+    const uid = sanitizeRfidUid(req.body.uid);
+
+    if (!uid) {
+      return res.status(400).json({
+        success: false,
+        message: 'El UID RFID es requerido',
+      });
+    }
+
+    const carnet = await Carnet.findOne({
+      where: {
+        id,
+        usuario_id: userId,
+      },
+    });
+
+    if (!carnet) {
+      return res.status(404).json({
+        success: false,
+        message: 'Carnet no encontrado',
+      });
+    }
+
+    const uidEnUso = await Carnet.findOne({
+      where: {
+        rfid_uid: uid,
+        id: { [Op.ne]: id },
+      },
+    });
+
+    if (uidEnUso) {
+      return res.status(409).json({
+        success: false,
+        message: 'Este UID RFID ya está asociado a otro carnet',
+      });
+    }
+
+    carnet.rfid_uid = uid;
+    carnet.rfid_activo = true;
+    await carnet.save();
+
+    return res.status(200).json({
+      success: true,
+      message: 'UID RFID vinculado correctamente',
+      data: mapCarnet(carnet),
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Error al vincular RFID al carnet',
+      error: error.message,
+    });
+  }
+};
+
+// Desvincular UID RFID de un carnet del usuario autenticado
+const desvincularRfidCarnet = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.usuario.id;
+
+    const carnet = await Carnet.findOne({
+      where: {
+        id,
+        usuario_id: userId,
+      },
+    });
+
+    if (!carnet) {
+      return res.status(404).json({
+        success: false,
+        message: 'Carnet no encontrado',
+      });
+    }
+
+    carnet.rfid_uid = null;
+    carnet.rfid_activo = false;
+    carnet.rfid_ultima_lectura = null;
+    await carnet.save();
+
+    return res.status(200).json({
+      success: true,
+      message: 'UID RFID desvinculado correctamente',
+      data: mapCarnet(carnet),
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Error al desvincular RFID del carnet',
+      error: error.message,
+    });
+  }
+};
+
+// Validación pública para lectores RFID (portería/torniquete)
+const validarAccesoRfid = async (req, res) => {
+  try {
+    if (!validarClaveDispositivoRFID(req, res)) {
+      return;
+    }
+
+    const uid = sanitizeRfidUid(req.body.uid);
+    if (!uid) {
+      return res.status(400).json({
+        success: false,
+        autorizado: false,
+        message: 'El UID RFID es requerido',
+      });
+    }
+
+    const carnet = await Carnet.findOne({
+      where: {
+        rfid_uid: uid,
+        rfid_activo: true,
+        activo: true,
+      },
+      include: [
+        {
+          model: Usuario,
+          attributes: ['id', 'nombre', 'apellidos', 'email', 'rol', 'activo'],
+        },
+      ],
+    });
+
+    if (!carnet || !carnet.Usuario || !carnet.Usuario.activo) {
+      return res.status(404).json({
+        success: false,
+        autorizado: false,
+        message: 'UID RFID no autorizado',
+      });
+    }
+
+    if (carnet.fecha_vencimiento && new Date(carnet.fecha_vencimiento) < new Date()) {
+      return res.status(403).json({
+        success: false,
+        autorizado: false,
+        message: 'Carnet vencido',
+        data: {
+          carnet_id: carnet.id,
+          numero: carnet.numero,
+          fecha_vencimiento: carnet.fecha_vencimiento,
+        },
+      });
+    }
+
+    carnet.rfid_ultima_lectura = new Date();
+    await carnet.save();
+
+    return res.status(200).json({
+      success: true,
+      autorizado: true,
+      message: 'Acceso autorizado',
+      data: {
+        carnet_id: carnet.id,
+        numero: carnet.numero,
+        rol_carnet: carnet.rol,
+        codigo_estudiante: carnet.codigo_estudiante,
+        tipo_credencial: carnet.tipo_credencial,
+        usuario: {
+          id: carnet.Usuario.id,
+          nombre: carnet.Usuario.nombre,
+          apellidos: carnet.Usuario.apellidos,
+          email: carnet.Usuario.email,
+          rol: carnet.Usuario.rol,
+        },
+        rfid_ultima_lectura: carnet.rfid_ultima_lectura,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      autorizado: false,
+      message: 'Error al validar acceso RFID',
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   obtenerCarnets,
   obtenerCarnetPorId,
@@ -567,4 +771,7 @@ module.exports = {
   agregarEmpleado,
   agregarEstudiante,
   actualizarFotoCarnet,
+  vincularRfidCarnet,
+  desvincularRfidCarnet,
+  validarAccesoRfid,
 };

@@ -1,0 +1,259 @@
+.rfid-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(6, 14, 34, 0.72);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+  padding: 16px;
+}
+
+.rfid-modal-content {
+  width: 100%;
+  max-width: 460px;
+  background: #f8fbff;
+  border-radius: 16px;
+  box-shadow: 0 16px 60px rgba(0, 0, 0, 0.34);
+  overflow: hidden;
+}
+
+.rfid-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, #0b2a6d 0%, #3b82f6 100%);
+  color: #fff;
+}
+
+.rfid-modal-header h3 {
+  margin: 0;
+}
+
+.rfid-modal-close {
+  border: none;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border-radius: 999px;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+}
+
+.rfid-pay-zone {
+  text-align: center;
+  padding: 20px 18px;
+  background: radial-gradient(circle at top, #dbeafe 0%, #f8fbff 70%);
+}
+
+.rfid-pay-zone p {
+  margin: 10px 0 4px;
+  color: #123b80;
+  font-weight: 700;
+  font-size: 1.06rem;
+}
+
+.rfid-pay-zone small {
+  color: #5d6c8f;
+}
+
+.rfid-auto-hint {
+  margin-top: 10px;
+  font-size: 0.82rem;
+  color: #334155;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px dashed rgba(37, 99, 235, 0.45);
+  border-radius: 8px;
+  padding: 6px 8px;
+  text-align: center;
+}
+
+.rfid-wave {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto;
+  border-radius: 50%;
+  border: 3px solid #0f3e9f;
+  position: relative;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+}
+
+.rfid-wave::before,
+.rfid-wave::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 2px solid #1d4ed8;
+  opacity: 0;
+  animation: ping-wave 1.8s infinite;
+}
+
+.rfid-wave::after {
+  animation-delay: 0.6s;
+}
+
+@keyframes ping-wave {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.6;
+  }
+  70% {
+    transform: scale(1.45);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.rfid-form {
+  padding: 16px 18px 20px;
+}
+
+.rfid-reader-shell {
+  border: 1px solid #bfdbfe;
+  background: linear-gradient(135deg, #ffffff 0%, #edf5ff 100%);
+  border-radius: 12px;
+  padding: 14px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.rfid-reader-title {
+  color: #0f3e9f;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.rfid-reader-subtitle {
+  color: #4b5f86;
+  font-size: 0.85rem;
+  margin-top: 2px;
+}
+
+.rfid-reader-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin: 10px auto 0;
+  background: #1d4ed8;
+  box-shadow: 0 0 0 0 rgba(29, 78, 216, 0.8);
+  animation: status-pulse 1.6s infinite;
+}
+
+@keyframes status-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(29, 78, 216, 0.8);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(29, 78, 216, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(29, 78, 216, 0);
+  }
+}
+
+.rfid-current {
+  margin: 0 0 8px;
+  color: #1e3a8a;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.rfid-error,
+.rfid-success {
+  margin: 0 0 10px;
+  font-size: 0.92rem;
+}
+
+.rfid-error {
+  color: #b91c1c;
+}
+
+.rfid-success {
+  color: #166534;
+}
+
+.rfid-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.rfid-btn-cancel,
+.rfid-btn-primary,
+.rfid-btn-danger {
+  border: none;
+  border-radius: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.rfid-btn-cancel {
+  background: #e5e7eb;
+  color: #1f2937;
+  flex: 1;
+}
+
+.rfid-btn-primary {
+  background: #0f3e9f;
+  color: #e2ecff;
+  flex: 2;
+  cursor: not-allowed;
+  opacity: 0.85;
+}
+
+.rfid-btn-danger {
+  margin-top: 12px;
+  width: 100%;
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+@media (max-width: 480px) {
+  .rfid-modal-overlay {
+    padding: 10px;
+    align-items: flex-end;
+  }
+
+  .rfid-modal-content {
+    max-width: 100%;
+    border-radius: 16px 16px 12px 12px;
+  }
+
+  .rfid-modal-header {
+    padding: 12px 14px;
+  }
+
+  .rfid-modal-header h3 {
+    font-size: 1rem;
+  }
+
+  .rfid-pay-zone {
+    padding: 14px 12px;
+  }
+
+  .rfid-pay-zone p {
+    font-size: 0.96rem;
+  }
+
+  .rfid-form {
+    padding: 12px 12px 14px;
+  }
+
+  .rfid-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .rfid-btn-cancel,
+  .rfid-btn-primary,
+  .rfid-btn-danger {
+    width: 100%;
+    min-height: 42px;
+  }
+}
