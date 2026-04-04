@@ -184,23 +184,129 @@
 
 /* REVERSO */
 .carnet-back {
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.85) 0%, rgba(118, 75, 162, 0.85) 100%);
+  background: linear-gradient(145deg, #5a2ea6 0%, #7b3fe4 52%, #c8a8ff 100%);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   transform: rotateY(180deg);
   align-items: center;
-  justify-content: center;
-  color: rgb(22, 17, 17);
+  justify-content: space-between;
+  color: #f8f6ff;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
   text-align: center;
+  padding: 24px 18px 18px;
+  position: relative;
 }
 
 .carnet-back h3 {
-  margin: 0 0 20px 0;
-  font-size: 1.3rem;
-  text-shadow: 2px 20px 0px rgba(0, 0, 0, 0.671);
-  
+  margin: 14px 0 8px;
+  font-size: 1.36rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: #5a2ea6 !important;
+  background: rgba(255, 255, 255, 0.84);
+  border: 1px solid rgba(123, 63, 228, 0.38);
+  border-radius: 999px;
+  padding: 6px 14px;
+  text-shadow: none;
+}
+
+.carnet-back-reader {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.reader-icon-wrap {
+  position: relative;
+  width: 136px;
+  height: 136px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: radial-gradient(circle at 35% 30%, rgba(200, 168, 255, 0.9), rgba(123, 63, 228, 0.5));
+  border: 2px solid rgba(90, 46, 166, 0.8);
+  box-shadow: 0 18px 38px rgba(56, 16, 110, 0.34), 0 0 0 8px rgba(200, 168, 255, 0.2);
+}
+
+.reader-phone {
+  width: 44px;
+  height: 72px;
+  border-radius: 10px;
+  border: 3px solid #5a2ea6;
+  background: linear-gradient(180deg, rgba(200, 168, 255, 0.78) 0%, rgba(123, 63, 228, 0.5) 100%);
+  position: relative;
+  box-shadow: inset 0 0 0 1px rgba(90, 46, 166, 0.45);
+}
+
+.reader-phone::before {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 3px;
+  border-radius: 99px;
+  background: rgba(90, 46, 166, 0.9);
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.reader-wave {
+  position: absolute;
+  border-radius: 999px;
+  border: 2px solid rgba(90, 46, 166, 0.9);
+  right: 24px;
+  transform-origin: center;
+  animation: reader-pulse 1.8s infinite;
+  box-shadow: 0 0 16px rgba(123, 63, 228, 0.5);
+}
+
+.reader-wave.wave-1 {
+  width: 20px;
+  height: 20px;
+  opacity: 0.95;
+  animation-delay: 0.2s;
+}
+
+.reader-wave.wave-2 {
+  width: 34px;
+  height: 34px;
+  opacity: 0.75;
+  animation-delay: 0.45s;
+}
+
+.reader-wave.wave-3 {
+  width: 48px;
+  height: 48px;
+  opacity: 0.58;
+  animation-delay: 0.7s;
+}
+
+@keyframes reader-pulse {
+  0% {
+    transform: scale(0.88);
+    opacity: 0.2;
+  }
+  40% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.08);
+    opacity: 0.2;
+  }
+}
+
+.carnet-back-subtitle {
+  margin: 0;
+  max-width: 230px;
+  font-size: 0.9rem;
+  line-height: 1.35;
+  color: rgba(90, 46, 166, 0.96);
+  font-weight: 600;
 }
 
 .qr-box {
@@ -229,11 +335,57 @@
 }
 
 .carnet-back-rfid {
-  margin-top: 12px;
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  gap: 6px;
+  pointer-events: auto;
+}
+
+.carnet-back .carnet-rfid-status {
+  padding: 5px 10px;
+  font-size: 0.68rem;
+  letter-spacing: 0.02em;
+  background: rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  color: #f8f6ff;
+  backdrop-filter: blur(6px);
+}
+
+.carnet-back .carnet-rfid-status.ok {
+  background: rgba(22, 163, 74, 0.86);
+  border-color: rgba(220, 252, 231, 0.95);
+  color: #f0fdf4;
+  box-shadow: 0 6px 14px rgba(21, 128, 61, 0.4);
+}
+
+.carnet-back .carnet-rfid-status.off {
+  background: rgba(127, 29, 29, 0.35);
+  border-color: rgba(254, 202, 202, 0.56);
+  color: #fee2e2;
+}
+
+.carnet-back .btn-rfid-activate {
+  margin-top: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  padding: 0;
+  font-size: 0.68rem;
+  letter-spacing: 0.03em;
+  background: linear-gradient(135deg, #ffffff 0%, #efe6ff 100%);
+  border: 1px solid rgba(255, 255, 255, 0.98);
+  color: #5a2ea6;
+  box-shadow: 0 10px 20px rgba(44, 14, 86, 0.32);
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.carnet-back .btn-rfid-activate:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 26px rgba(44, 14, 86, 0.42);
 }
 
 @media (max-width: 768px) {
@@ -279,8 +431,24 @@
   }
 
   .carnet-back h3 {
-    font-size: 1.05rem;
-    margin-bottom: 12px;
+    font-size: 1.12rem;
+    margin-top: 10px;
+    margin-bottom: 8px;
+  }
+
+  .reader-icon-wrap {
+    width: 112px;
+    height: 112px;
+  }
+
+  .reader-phone {
+    width: 38px;
+    height: 64px;
+  }
+
+  .carnet-back-subtitle {
+    font-size: 0.82rem;
+    max-width: 200px;
   }
 
   .qr-box,
@@ -293,6 +461,19 @@
   .btn-rfid-activate {
     font-size: 0.72rem;
     padding: 5px 10px;
+  }
+
+  .carnet-back-rfid {
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+  }
+
+  .carnet-back .btn-rfid-activate {
+    width: 40px;
+    height: 40px;
+    font-size: 0.62rem;
+    padding: 0;
   }
 }
 
@@ -334,11 +515,16 @@
     font-size: 0.98rem;
   }
 
-  .carnet-back p {
-    font-size: 0.85rem;
+  .carnet-back-subtitle {
+    font-size: 0.78rem;
   }
 
   .carnet-rfid-status {
     font-size: 0.66rem;
+  }
+
+  .carnet-back .btn-rfid-activate {
+    width: 38px;
+    height: 38px;
   }
 }

@@ -7,9 +7,6 @@ import RfidActivateModal from './RfidActivateModal';
 function CarnetCard({ estudiante, token, onRfidUpdated }) {
   const [isFlipped, setIsFlipped] = useState(false);
   const [showRfidModal, setShowRfidModal] = useState(false);
-  const qrSrc = estudiante.qr_base64
-    ? `data:image/png;base64,${estudiante.qr_base64}`
-    : null;
 
   // Mostrar carrera para ESTUDIANTE o cargo para EMPLEADO
   const descripcion = estudiante.rol === 'EMPLEADO' 
@@ -52,25 +49,30 @@ function CarnetCard({ estudiante, token, onRfidUpdated }) {
 
         {/* REVERSO */}
         <div className="carnet-back" style={{ backgroundImage: `url(${fondoCarnet})` }}>
-          <h3>QR Code</h3>
-          {qrSrc ? (
-            <img src={qrSrc} alt="QR" className="qr-image" />
-          ) : (
-            <div className="qr-box"></div>
-          )}
-          <p>{estudiante.codigo_estudiante}</p>
-          <div className="carnet-back-rfid">
+          <div className="carnet-back-reader" aria-hidden="true">
+            <div className="reader-icon-wrap">
+              <div className="reader-phone"></div>
+              <div className="reader-wave wave-1"></div>
+              <div className="reader-wave wave-2"></div>
+              <div className="reader-wave wave-3"></div>
+            </div>
+            <h3>Acercar al lector</h3>
+            <p className="carnet-back-subtitle">Coloca el carnet cerca para leer el RFID</p>
+          </div>
+          <div className="carnet-back-rfid" onClick={(e) => e.stopPropagation()}>
             <span className={`carnet-rfid-status ${estudiante.rfid_activo ? 'ok' : 'off'}`}>
-              {estudiante.rfid_activo ? 'RFID Activo' : 'RFID Inactivo'}
+              {estudiante.rfid_activo ? 'RFID ON' : 'RFID OFF'}
             </span>
             <button
               className="btn-rfid-activate"
+              title="Configurar UID"
+              aria-label="Configurar UID"
               onClick={(e) => {
                 e.stopPropagation();
                 setShowRfidModal(true);
               }}
             >
-              Activar UID
+              UID
             </button>
           </div>
         </div>

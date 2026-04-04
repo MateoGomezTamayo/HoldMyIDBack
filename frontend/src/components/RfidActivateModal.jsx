@@ -147,24 +147,22 @@ function RfidActivateModal({ isOpen, onClose, carnet, token, onRfidUpdated }) {
     <div className="rfid-modal-overlay" onClick={onClose}>
       <div className="rfid-modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="rfid-modal-header">
-          <h3>Activar UID RFID</h3>
+          <h3>Acercar al lector</h3>
           <button type="button" className="rfid-modal-close" onClick={onClose}>x</button>
         </div>
 
         <div className="rfid-pay-zone">
           <div className="rfid-wave"></div>
-          <p>Solo acercalo al lector</p>
-          <small>Lectura y activacion automatica del UID.</small>
+          <p>Acercar al lector</p>
+          <small>Activacion automatica del UID.</small>
         </div>
 
         <div className="rfid-form">
           <div className="rfid-reader-shell">
-            <div className="rfid-reader-title">Lector en espera</div>
-            <div className="rfid-reader-subtitle">Acerca el carnet para detectar UID</div>
+            <div className="rfid-reader-title">Acercar al lector</div>
+            <div className="rfid-reader-subtitle">Detectando UID...</div>
             <div className="rfid-reader-dot"></div>
           </div>
-
-          <p className="rfid-auto-hint">Modo automatico activo. No necesitas escribir nada.</p>
 
           <p className="rfid-current">
             {uid ? `UID detectado: ${uid}` : 'UID detectado: --'}
@@ -176,7 +174,7 @@ function RfidActivateModal({ isOpen, onClose, carnet, token, onRfidUpdated }) {
           <div className="rfid-actions">
             <button type="button" onClick={onClose} className="rfid-btn-cancel">Cerrar</button>
             <button type="button" disabled className="rfid-btn-primary">
-              {loading ? 'Activando...' : 'Esperando lectura'}
+              {loading ? 'Activando...' : 'Acercar al lector'}
             </button>
           </div>
 

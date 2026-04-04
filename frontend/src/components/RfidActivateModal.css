@@ -1,7 +1,7 @@
 .rfid-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(6, 14, 34, 0.72);
+  background: rgba(36, 16, 68, 0.62);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -13,9 +13,10 @@
 .rfid-modal-content {
   width: 100%;
   max-width: 460px;
-  background: #f8fbff;
+  background: #faf7ff;
+  border: 1px solid rgba(123, 63, 228, 0.22);
   border-radius: 16px;
-  box-shadow: 0 16px 60px rgba(0, 0, 0, 0.34);
+  box-shadow: 0 16px 60px rgba(40, 18, 76, 0.35);
   overflow: hidden;
 }
 
@@ -24,18 +25,19 @@
   justify-content: space-between;
   align-items: center;
   padding: 14px 18px;
-  background: linear-gradient(135deg, #0b2a6d 0%, #3b82f6 100%);
-  color: #fff;
+  background: linear-gradient(135deg, #f4ecff 0%, #e8d8ff 100%);
+  color: var(--color-dark);
 }
 
 .rfid-modal-header h3 {
   margin: 0;
+  color: var(--color-dark);
 }
 
 .rfid-modal-close {
   border: none;
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
+  background: rgba(123, 63, 228, 0.14);
+  color: var(--color-dark);
   border-radius: 999px;
   width: 30px;
   height: 30px;
@@ -45,26 +47,26 @@
 .rfid-pay-zone {
   text-align: center;
   padding: 20px 18px;
-  background: radial-gradient(circle at top, #dbeafe 0%, #f8fbff 70%);
+  background: radial-gradient(circle at top, rgba(200, 168, 255, 0.55) 0%, #faf7ff 72%);
 }
 
 .rfid-pay-zone p {
   margin: 10px 0 4px;
-  color: #123b80;
+  color: var(--color-dark);
   font-weight: 700;
   font-size: 1.06rem;
 }
 
 .rfid-pay-zone small {
-  color: #5d6c8f;
+  color: #6a5a8f;
 }
 
 .rfid-auto-hint {
   margin-top: 10px;
   font-size: 0.82rem;
-  color: #334155;
-  background: rgba(59, 130, 246, 0.1);
-  border: 1px dashed rgba(37, 99, 235, 0.45);
+  color: #4b365f;
+  background: rgba(123, 63, 228, 0.12);
+  border: 1px dashed rgba(123, 63, 228, 0.45);
   border-radius: 8px;
   padding: 6px 8px;
   text-align: center;
@@ -75,9 +77,9 @@
   height: 72px;
   margin: 0 auto;
   border-radius: 50%;
-  border: 3px solid #0f3e9f;
+  border: 3px solid var(--color-dark);
   position: relative;
-  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  background: linear-gradient(135deg, #f7f0ff 0%, rgba(200, 168, 255, 0.65) 100%);
 }
 
 .rfid-wave::before,
@@ -86,7 +88,7 @@
   position: absolute;
   inset: -8px;
   border-radius: 50%;
-  border: 2px solid #1d4ed8;
+  border: 2px solid var(--color-primary);
   opacity: 0;
   animation: ping-wave 1.8s infinite;
 }
@@ -114,8 +116,8 @@
 }
 
 .rfid-reader-shell {
-  border: 1px solid #bfdbfe;
-  background: linear-gradient(135deg, #ffffff 0%, #edf5ff 100%);
+  border: 1px solid rgba(123, 63, 228, 0.32);
+  background: linear-gradient(135deg, #ffffff 0%, rgba(200, 168, 255, 0.25) 100%);
   border-radius: 12px;
   padding: 14px;
   text-align: center;
@@ -123,13 +125,13 @@
 }
 
 .rfid-reader-title {
-  color: #0f3e9f;
+  color: var(--color-dark);
   font-weight: 700;
   font-size: 0.95rem;
 }
 
 .rfid-reader-subtitle {
-  color: #4b5f86;
+  color: #5d4f80;
   font-size: 0.85rem;
   margin-top: 2px;
 }
@@ -139,17 +141,17 @@
   height: 10px;
   border-radius: 50%;
   margin: 10px auto 0;
-  background: #1d4ed8;
-  box-shadow: 0 0 0 0 rgba(29, 78, 216, 0.8);
+  background: var(--color-primary);
+  box-shadow: 0 0 0 0 rgba(123, 63, 228, 0.75);
   animation: status-pulse 1.6s infinite;
 }
 
 @keyframes status-pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(29, 78, 216, 0.8);
+    box-shadow: 0 0 0 0 rgba(123, 63, 228, 0.75);
   }
   70% {
-    box-shadow: 0 0 0 10px rgba(29, 78, 216, 0);
+    box-shadow: 0 0 0 10px rgba(123, 63, 228, 0);
   }
   100% {
     box-shadow: 0 0 0 0 rgba(29, 78, 216, 0);
@@ -158,7 +160,7 @@
 
 .rfid-current {
   margin: 0 0 8px;
-  color: #1e3a8a;
+  color: var(--color-dark);
   font-size: 0.92rem;
   font-weight: 600;
 }
@@ -199,11 +201,12 @@
 }
 
 .rfid-btn-primary {
-  background: #0f3e9f;
-  color: #e2ecff;
+  background: linear-gradient(135deg, #f4ecff 0%, #e8d8ff 100%);
+  color: var(--color-dark);
+  border: 1px solid rgba(123, 63, 228, 0.35);
   flex: 2;
   cursor: not-allowed;
-  opacity: 0.85;
+  opacity: 0.95;
 }
 
 .rfid-btn-danger {
