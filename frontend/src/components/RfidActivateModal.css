@@ -205,8 +205,74 @@
   color: var(--color-dark);
   border: 1px solid rgba(123, 63, 228, 0.35);
   flex: 2;
+}
+
+.rfid-btn-primary:disabled {
+  opacity: 0.55;
   cursor: not-allowed;
-  opacity: 0.95;
+}
+
+/* Botón NFC */
+.rfid-btn-nfc {
+  display: block;
+  width: 100%;
+  margin-bottom: 14px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 2px solid var(--color-primary);
+  background: linear-gradient(135deg, #f4ecff 0%, #e8d8ff 100%);
+  color: var(--color-dark);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.rfid-btn-nfc.active {
+  background: linear-gradient(135deg, #7B3FE4 0%, #5A2EA6 100%);
+  color: #fff;
+  box-shadow: 0 0 0 3px rgba(123,63,228,0.35);
+  animation: nfc-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes nfc-pulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(123,63,228,0.35); }
+  50%       { box-shadow: 0 0 0 8px rgba(123,63,228,0.12); }
+}
+
+/* Campo manual */
+.rfid-manual-group {
+  margin-bottom: 14px;
+}
+
+.rfid-manual-label {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--color-dark);
+  font-weight: 600;
+  margin-bottom: 6px;
+  opacity: 0.85;
+}
+
+.rfid-manual-row {
+  display: flex;
+  gap: 8px;
+}
+
+.rfid-manual-input {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(123, 63, 228, 0.35);
+  font-size: 0.95rem;
+  background: #faf7ff;
+  color: #1f2937;
+  outline: none;
+}
+
+.rfid-manual-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(123,63,228,0.15);
 }
 
 .rfid-btn-danger {

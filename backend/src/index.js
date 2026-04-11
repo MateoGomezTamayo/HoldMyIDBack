@@ -11,6 +11,9 @@ const crearBaseDatos = require('./utils/crearBaseDatos');
 
 const app = express();
 
+// Necesario para obtener la IP real del cliente cuando hay proxy/reverse proxy
+app.set('trust proxy', true);
+
 // Middlewares
 app.use(cors());
 app.use(bodyParser.json());

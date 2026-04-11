@@ -1,8 +1,20 @@
 const { Carnet, Usuario, Empleado, Estudiante } = require('../models');
 const { Op } = require('sequelize');
 const QRCode = require('qrcode');
+const crypto = require('crypto');
+const { hashPassword } = require('../utils/password');
 
 const sanitizeRfidUid = (uid) => String(uid || '').trim().toUpperCase();
+
+const sanitizeText = (value) => String(value || '').trim();
+
+const buildFallbackEmail = (rol, identificador) => {
+  const safeRole = rol.toLowerCase();
+  const safeId = String(identificador || '').replace(/[^a-zA-Z0-9]/g, '').toLowerCase() || 'sinid';
+  return `${safeRole}.${safeId}@holdmyid.local`;
+};
+
+const createRandomPassword = () => crypto.randomBytes(16).toString('hex');
 
 const validarClaveDispositivoRFID = (req, res) => {
   const expectedKey = process.env.RFID_DEVICE_KEY;
@@ -762,6 +774,174 @@ const validarAccesoRfid = async (req, res) => {
   }
 };
 
+// Autoprovisionar usuario + carnet con RFID (uso por dispositivo)
+const autoprovisionarRfid = async (req, res) => {
+  try {
+    if (!validarClaveDispositivoRFID(req, res)) {
+      return;
+    }
+
+    const uid = sanitizeRfidUid(req.body.uid);
+    const rol = sanitizeText(req.body.rol).toUpperCase();
+    const codigoEstudiante = sanitizeText(req.body.codigo_estudiante || req.body.identificador);
+    const cedula = sanitizeText(req.body.cedula || req.body.identificador);
+    const identificador = rol === 'EMPLEADO' ? cedula : codigoEstudiante;
+
+    if (!uid) {
+      return res.status(400).json({
+        success: false,
+        message: 'El UID RFID es requerido',
+      });
+    }
+
+    if (!['ESTUDIANTE', 'EMPLEADO'].includes(rol)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Rol inválido. Usa ESTUDIANTE o EMPLEADO',
+      });
+    }
+
+    if (!identificador) {
+      return res.status(400).json({
+        success: false,
+        message: rol === 'EMPLEADO' ? 'La cédula es requerida' : 'El código de estudiante es requerido',
+      });
+    }
+
+    const uidEnUso = await Carnet.findOne({
+      where: {
+        rfid_uid: uid,
+      },
+      include: [{ model: Usuario, attributes: ['id', 'nombre', 'apellidos', 'email', 'rol', 'activo'] }],
+    });
+
+    if (uidEnUso) {
+      return res.status(409).json({
+        success: false,
+        message: 'Este UID RFID ya está asociado a otro carnet',
+        data: {
+          carnet_id: uidEnUso.id,
+          usuario_id: uidEnUso.usuario_id,
+        },
+      });
+    }
+
+    const registroBase = rol === 'EMPLEADO'
+      ? await Empleado.findOne({ where: { cedula: identificador } })
+      : await Estudiante.findOne({ where: { codigo_estudiante: identificador } });
+
+    if (!registroBase) {
+      return res.status(404).json({
+        success: false,
+        message: rol === 'EMPLEADO' ? 'La cédula no está autorizada' : 'El código de estudiante no está autorizado',
+      });
+    }
+
+    const correoBase = sanitizeText(registroBase.correo).toLowerCase();
+
+    let usuario = await Usuario.findOne({
+      where: rol === 'EMPLEADO'
+        ? { cedula: identificador }
+        : { codigo_estudiante: identificador },
+    });
+
+    if (!usuario && correoBase) {
+      usuario = await Usuario.findOne({ where: { email: correoBase } });
+    }
+
+    if (!usuario) {
+      const nombre = sanitizeText(req.body.nombre) || 'Usuario';
+      const apellidos = sanitizeText(req.body.apellidos) || (rol === 'EMPLEADO' ? 'Empleado RFID' : 'Estudiante RFID');
+      const email = sanitizeText(req.body.email).toLowerCase() || correoBase || buildFallbackEmail(rol, identificador);
+      const passwordHasheada = await hashPassword(createRandomPassword());
+
+      usuario = await Usuario.create({
+        nombre,
+        apellidos,
+        codigo_estudiante: rol === 'ESTUDIANTE' ? identificador : null,
+        cedula: rol === 'EMPLEADO' ? identificador : null,
+        email,
+        contrasena: passwordHasheada,
+        universidad: sanitizeText(req.body.universidad) || null,
+        rol,
+        activo: true,
+        email_verificado: true,
+      });
+    } else {
+      const updates = {};
+      if (rol === 'ESTUDIANTE' && !usuario.codigo_estudiante) {
+        updates.codigo_estudiante = identificador;
+      }
+      if (rol === 'EMPLEADO' && !usuario.cedula) {
+        updates.cedula = identificador;
+      }
+      if (!usuario.email_verificado) {
+        updates.email_verificado = true;
+      }
+      if (Object.keys(updates).length > 0) {
+        await usuario.update(updates);
+      }
+    }
+
+    let carnet = await Carnet.findOne({
+      where: {
+        usuario_id: usuario.id,
+        rol,
+        codigo_estudiante: identificador,
+      },
+    });
+
+    if (!carnet) {
+      const qrPayload = JSON.stringify({
+        id: usuario.id,
+        identificador,
+        rol,
+      });
+
+      const qrBuffer = await QRCode.toBuffer(qrPayload, {
+        type: 'png',
+        width: 300,
+        margin: 1,
+      });
+
+      carnet = await Carnet.create({
+        usuario_id: usuario.id,
+        codigo_estudiante: identificador,
+        rol,
+        numero: `${rol}-${identificador}`,
+        codigo_qr: qrBuffer,
+        rfid_uid: uid,
+        rfid_activo: true,
+      });
+    } else {
+      carnet.rfid_uid = uid;
+      carnet.rfid_activo = true;
+      await carnet.save();
+    }
+
+    return res.status(201).json({
+      success: true,
+      message: 'Usuario y carnet aprovisionados con RFID correctamente',
+      data: {
+        usuario: {
+          id: usuario.id,
+          nombre: usuario.nombre,
+          apellidos: usuario.apellidos,
+          email: usuario.email,
+          rol: usuario.rol,
+        },
+        carnet: mapCarnet(carnet),
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Error al autoprovisionar RFID',
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   obtenerCarnets,
   obtenerCarnetPorId,
@@ -774,4 +954,5 @@ module.exports = {
   vincularRfidCarnet,
   desvincularRfidCarnet,
   validarAccesoRfid,
+  autoprovisionarRfid,
 };

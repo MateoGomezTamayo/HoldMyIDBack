@@ -14,6 +14,7 @@ const {
   vincularRfidCarnet,
   desvincularRfidCarnet,
   validarAccesoRfid,
+  autoprovisionarRfid,
 } = require('../controllers/carnetController');
 
 // Configurar multer para fotos
@@ -50,6 +51,9 @@ router.get('/status', (req, res) => {
 
 // POST /api/carnets/rfid/validar - Validar UID RFID para acceso físico (PÚBLICA con clave de dispositivo opcional)
 router.post('/rfid/validar', validarAccesoRfid);
+
+// POST /api/carnets/rfid/autoprovisionar - Crear usuario+carnet y vincular UID RFID (PÚBLICA con clave de dispositivo opcional)
+router.post('/rfid/autoprovisionar', autoprovisionarRfid);
 
 // RUTAS PROTEGIDAS (requieren autenticación)
 router.use(authMiddleware);
