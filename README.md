@@ -26,6 +26,12 @@ HoldMyIDBack es una aplicación web responsiva que permite a los usuarios:
 - ✅ Sistema de prevención de fraude con verificación de propietario
 - ✅ Ver sus credenciales en un formato de cartera digital con efecto flip
 
+## 🏛️ Arquitectura / ADR
+
+La decisión de estilo arquitectónico del proyecto está documentada en:
+
+- [ADR-0001: Estilo Arquitectónico del Proyecto](docs/adr/0001-estilo-arquitectonico.md)
+
 ---
 
 ## 🛠️ Tecnologías Empleadas
